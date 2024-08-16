@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapContainer, TileLayer, Polygon } from 'react-leaflet';
+import { MapContainer, TileLayer, useMapEvent, Polygon } from 'react-leaflet';
 import { cellToBoundary } from 'h3-js';
 import "leaflet/dist/leaflet.css";
 
@@ -13,13 +13,25 @@ const getColorForCount = (count) => {
                        '#ADFF2F';
 };
 
-const Heatmap = ({ heatmapData }) => {
+const ZoomEventHandlers = ({ handleZoomEnd }) => {
+  useMapEvent('zoomend', handleZoomEnd);
+  return null;
+};
+
+
+const Heatmap = ({ heatmapData, changeResolutionWhenZoom }) => {
+  const handleZoomEnd = (e) => {
+    console.log('Map zoom level:', e.target.getZoom());
+    changeResolutionWhenZoom(e.target.getZoom()-4)
+  };
+
   return (
     <MapContainer center={[1.3521, 103.8198]} zoom={12} style={{ height: "100vh" }}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution="&copy; OpenStreetMap contributors"
       />
+      <ZoomEventHandlers handleZoomEnd={handleZoomEnd} />
       {heatmapData.map(({ h3Index, count }) => {
         const boundaries = cellToBoundary(h3Index);
         const color = getColorForCount(count);
