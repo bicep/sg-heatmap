@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { latLngToCell } from 'h3-js';
+import Heatmap from './Heatmap';
 
 const url = "https://raw.githubusercontent.com/cheeaun/sgtreesdata/main/data/trees.csv";
 
@@ -8,10 +9,13 @@ const App = () => {
   const [heatmapData, setHeatmapData] = useState([]);
   const resolution = 9; // Set a default resolution, this can be made dynamic later
 
+  //useEffect only runs when the resolution changes
   useEffect(() => {
-    const res = require("./trees.json");
-    setHeatmapData(res);
-  });
+    const data = require("./trees.json");
+    const newHeatMapData = aggregateData(data, resolution);
+    console.log(newHeatMapData[0]);
+    setHeatmapData(newHeatMapData);
+  },[resolution]);
 
   const aggregateData = (data, resolution) => {
     const h3Map = {};
@@ -32,9 +36,9 @@ const App = () => {
   };
 
   return (
-    <div className="App">
+    <div>
       <h1>Singapore Tree Heatmap</h1>
-      {/* <Heatmap heatmapData={heatmapData} /> */}
+      <Heatmap heatmapData={heatmapData} />
     </div>
   );
 };
