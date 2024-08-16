@@ -6,15 +6,15 @@ const url = "https://raw.githubusercontent.com/cheeaun/sgtreesdata/main/data/tre
 
 
 const App = () => {
-  const [heatmapData, setHeatmapData] = useState([]);
+  const [rawTreeData, setRawTreeData] = useState([])
   const [resolution, setResolution] = useState(8); // Set a default resolution, this can be made dynamic later
 
   //useEffect only runs when the resolution changes
   useEffect(() => {
-    const data = require("./trees.json");
-    const newHeatMapData = aggregateData(data, resolution);
-    setHeatmapData(newHeatMapData);
-  },[resolution]);
+    const rawData = require("./trees.json");
+    console.log(rawData[0]);
+    setRawTreeData(rawData);
+  },[]);
 
   const changeResolutionWhenZoom = (newResolution) => {
     setResolution(newResolution);
@@ -38,10 +38,12 @@ const App = () => {
     }));
   };
 
+  const newHeatMapTreeData = aggregateData(rawTreeData, resolution);
+
   return (
     <div>
       <h1>Singapore Tree Heatmap</h1>
-      <Heatmap heatmapData={heatmapData} changeResolutionWhenZoom={changeResolutionWhenZoom} />
+      <Heatmap heatmapData={newHeatMapTreeData} changeResolutionWhenZoom={changeResolutionWhenZoom} />
     </div>
   );
 };
