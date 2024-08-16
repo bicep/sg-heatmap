@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { latLngToCell } from 'h3-js';
 import Heatmap from './Heatmap';
 
@@ -10,11 +10,20 @@ const App = () => {
   const [resolution, setResolution] = useState(8); // Set a default resolution, this can be made dynamic later
 
   //useEffect only runs when the resolution changes
+  // useEffect(() => {
+  //   const rawData = require("./trees.json");
+  //   console.log(rawData[0]);
+  //   setRawTreeData(rawData);
+  // },[]);
+
   useEffect(() => {
-    const rawData = require("./trees.json");
-    console.log(rawData[0]);
-    setRawTreeData(rawData);
-  },[]);
+    const fetchData = async () => {
+      const data = await require('./trees.json');
+      console.log(data[0]);
+      setRawTreeData(data);
+    };
+    fetchData();
+  }, []);
 
   const changeResolutionWhenZoom = (newResolution) => {
     setResolution(newResolution);

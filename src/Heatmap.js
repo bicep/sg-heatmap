@@ -23,8 +23,8 @@ const Heatmap = ({ heatmapData, changeResolutionWhenZoom }) => {
   const handleZoomEnd = (e) => {
     console.log('Map zoom level:', e.target.getZoom());
     let resolution = e.target.getZoom()-4;
-    if (e.target.getZoom() >=15)  {
-      resolution = 10;
+    if (e.target.getZoom() >=14)  {
+      resolution = 9;
     }
     changeResolutionWhenZoom(resolution)
   };
