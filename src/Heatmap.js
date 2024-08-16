@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { MapContainer, TileLayer, useMapEvent, Polygon } from 'react-leaflet';
 import { cellToBoundary } from 'h3-js';
 import "leaflet/dist/leaflet.css";
+import Legend from './Legend';
 
 
 const getColorForCount = (count) => {
@@ -20,21 +21,26 @@ const ZoomEventHandlers = ({ handleZoomEnd }) => {
 
 
 const Heatmap = ({ heatmapData, changeResolutionWhenZoom }) => {
+
+  const [map, setMap] = useState(null);
+
+
   const handleZoomEnd = (e) => {
     console.log('Map zoom level:', e.target.getZoom());
     let resolution = e.target.getZoom()-4;
-    if (e.target.getZoom() >=14)  {
+    if (e.target.getZoom() >=15)  {
       resolution = 9;
     }
     changeResolutionWhenZoom(resolution)
   };
 
   return (
-    <MapContainer center={[1.3521, 103.8198]} zoom={12} style={{ height: "100vh" }}>
+    <MapContainer center={[1.3521, 103.8198]} zoom={12} style={{ height: "100vh" }} ref={setMap}>
       <TileLayer
+        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution="&copy; OpenStreetMap contributors"
       />
+      <Legend map={map} />
       <ZoomEventHandlers handleZoomEnd={handleZoomEnd} />
       {heatmapData.map(({ h3Index, count }) => {
         const boundaries = cellToBoundary(h3Index);
