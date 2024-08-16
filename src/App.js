@@ -16,11 +16,17 @@ const App = () => {
   //   setRawTreeData(rawData);
   // },[]);
 
+  function randomSample(data, sampleSize) {
+    const totalRows = data.length;
+    const indices = Array.from({ length: sampleSize }, (_, i) => Math.floor(Math.random() * totalRows));
+    return indices.map(index => data[index]);
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       const data = await require('./trees.json');
-      console.log(data[0]);
-      setRawTreeData(data);
+      const smallerData = randomSample(data, 100000)
+      setRawTreeData(smallerData);
     };
     fetchData();
   }, []);
