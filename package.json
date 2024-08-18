@@ -8,14 +8,17 @@
     "@testing-library/user-event": "^13.5.0",
     "buffer": "^6.0.3",
     "csv-parse": "^5.5.6",
+    "eslint": "^8.57.0",
     "h3-js": "^4.1.0",
     "leaflet": "^1.9.4",
+    "nominatim-client": "^3.2.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-leaflet": "^4.2.1",
     "react-scripts": "5.0.1",
     "stream": "^0.0.3",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "which-country": "^1.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

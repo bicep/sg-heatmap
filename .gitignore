@@ -22,6 +22,12 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-/src/script.js
+/src/tree_script.js
+/src/hdb_script.js
+/src/elderly_script.js
 /src/trees.json
 /public/trees.csv
+/src/hdb.json
+/public/hdb.csv
+/src/elderly.json
+/public/elderly.csv

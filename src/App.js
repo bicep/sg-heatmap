@@ -1,12 +1,11 @@
 import React, { useEffect, useState} from 'react';
-import { latLngToCell } from 'h3-js';
 import Heatmap from './Heatmap';
-
-const url = "https://raw.githubusercontent.com/cheeaun/sgtreesdata/main/data/trees.csv";
-
+import { aggregatePointData, aggregateValueData, calculateDivisions } from './Utils';
 
 const App = () => {
-  const [rawTreeData, setRawTreeData] = useState([])
+  const [dataSetSelection, setDataSetSelection] = useState("hdb");
+  const [rawTreeData, setRawTreeData] = useState([]);
+  const [rawHDBData, setRawHDBData] = useState([]);
   const [resolution, setResolution] = useState(8); // Set a default resolution, this can be made dynamic later
 
   function randomSample(data, sampleSize) {
@@ -16,42 +15,46 @@ const App = () => {
   }
 
   useEffect(() => {
-    const fetchData = async () => {
-      const treeData = await require('./trees.json');
-      const smallerTreeData = randomSample(treeData, 100000)
+    // load data
+    const fetchTreeData = async () => {
+      const treeData = await require("./trees.json");
+      const smallerTreeData = randomSample(treeData, 100000);
       setRawTreeData(smallerTreeData);
     };
-    fetchData();
-  }, []);
+    const fetchHDBData = async () => {
+      const HDBData = await require("./hdb.json");
+      // const smallerHDBData = randomSample(HDBData, 100000);
+      setRawHDBData(HDBData);
+    };
+    fetchTreeData();
+    fetchHDBData();
+  }, [])
 
   const changeResolutionWhenZoom = (newResolution) => {
     setResolution(newResolution);
   };
 
-  const aggregateData = (data, resolution) => {
-    const h3Map = {};
 
-    data.forEach(point => {
-      const h3Index = latLngToCell(parseFloat(point.lat), parseFloat(point.lon), resolution);
-      if (h3Map[h3Index]) {
-        h3Map[h3Index]++;
-      } else {
-        h3Map[h3Index] = 1;
-      }
-    });
 
-    return Object.keys(h3Map).map(h3Index => ({
-      h3Index,
-      count: h3Map[h3Index]
-    }));
-  };
+  let heatMapDataToDisplay;
+  // check if tree of hdb data
+  switch (dataSetSelection) {
+    case "tree":
+      heatMapDataToDisplay = aggregatePointData(rawTreeData, resolution);
+      break;
+    case "hdb":
+      heatMapDataToDisplay = aggregateValueData(rawHDBData, resolution, "maxFloor");
+      break;
+    default:
+      heatMapDataToDisplay = [];
+  }
 
-  const newHeatMapTreeData = aggregateData(rawTreeData, resolution);
+  const thresholds = calculateDivisions(heatMapDataToDisplay, 5);
 
   return (
     <div>
-      <h1>Singapore Tree Heatmap</h1>
-      <Heatmap heatmapData={newHeatMapTreeData} changeResolutionWhenZoom={changeResolutionWhenZoom} />
+      <h1>{`Singapore ${dataSetSelection} Heatmap`}</h1>
+      <Heatmap heatmapData={heatMapDataToDisplay} thresholds={thresholds} changeResolutionWhenZoom={changeResolutionWhenZoom} />
     </div>
   );
 };
