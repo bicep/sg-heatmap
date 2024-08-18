@@ -17,9 +17,9 @@ const App = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await require('./trees.json');
-      const smallerData = randomSample(data, 100000)
-      setRawTreeData(smallerData);
+      const treeData = await require('./trees.json');
+      const smallerTreeData = randomSample(treeData, 100000)
+      setRawTreeData(smallerTreeData);
     };
     fetchData();
   }, []);
