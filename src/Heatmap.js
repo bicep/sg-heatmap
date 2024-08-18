@@ -50,7 +50,7 @@ const Heatmap = ({ heatmapData, thresholds, changeResolutionWhenZoom }) => {
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Legend map={map} getColor={getColorForCount}/>
+      <Legend map={map} getColor={getColorForCountWithThreshold} thresholds={thresholds}/>
       <ZoomEventHandlers handleZoomEnd={handleZoomEnd} />
       {heatmapData.map(({ h3Index, count }) => {
         const boundaries = cellToBoundary(h3Index);
