@@ -9,7 +9,7 @@ const getColorForCount = (count) => {
   return count > 500 ? '#00441b' :
          count > 300  ? '#006d2c' :
          count > 100  ? '#228B22' :
-         count > 50  ? '##32CD32' :
+         count > 50  ? '#32CD32' :
          count > 10   ? '#7FFF00' :
                        '#ADFF2F';
 };
@@ -26,7 +26,7 @@ const Heatmap = ({ heatmapData, changeResolutionWhenZoom }) => {
 
 
   const handleZoomEnd = (e) => {
-    console.log('Map zoom level:', e.target.getZoom());
+    // console.log('Map zoom level:', e.target.getZoom());
     let resolution = e.target.getZoom()-4;
     if (e.target.getZoom() >=15)  {
       resolution = 9;
@@ -40,7 +40,7 @@ const Heatmap = ({ heatmapData, changeResolutionWhenZoom }) => {
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Legend map={map} />
+      <Legend map={map} getColor={getColorForCount}/>
       <ZoomEventHandlers handleZoomEnd={handleZoomEnd} />
       {heatmapData.map(({ h3Index, count }) => {
         const boundaries = cellToBoundary(h3Index);

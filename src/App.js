@@ -9,13 +9,6 @@ const App = () => {
   const [rawTreeData, setRawTreeData] = useState([])
   const [resolution, setResolution] = useState(8); // Set a default resolution, this can be made dynamic later
 
-  //useEffect only runs when the resolution changes
-  // useEffect(() => {
-  //   const rawData = require("./trees.json");
-  //   console.log(rawData[0]);
-  //   setRawTreeData(rawData);
-  // },[]);
-
   function randomSample(data, sampleSize) {
     const totalRows = data.length;
     const indices = Array.from({ length: sampleSize }, (_, i) => Math.floor(Math.random() * totalRows));
