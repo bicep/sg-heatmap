@@ -49,7 +49,7 @@ const App = () => {
       heatMapDataToDisplay = [];
   }
 
-  const thresholds = calculateDivisions(heatMapDataToDisplay, 5);
+  const thresholds = calculateDivisions(heatMapDataToDisplay, 6);
 
   return (
     <div>

@@ -34,7 +34,7 @@ function Legend({ map, getColor }) {
 
       legend.addTo(map);
     }
-  }, [map]);
+  }, [map, getColor]);
   return null;
 }
 

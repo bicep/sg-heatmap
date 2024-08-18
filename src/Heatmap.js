@@ -14,13 +14,23 @@ const getColorForCount = (count) => {
                        '#ADFF2F';
 };
 
+const getColorForCountWithThreshold = (thresholds, count) => {
+  return count > thresholds[4] ? '#00441b' :
+         count > thresholds[3]  ? '#006d2c' :
+         count > thresholds[2]  ? '#228B22' :
+         count > thresholds[1]  ? '#32CD32' :
+         count > thresholds[0]   ? '#7FFF00' :
+                       '#ADFF2F';
+};
+
+
 const ZoomEventHandlers = ({ handleZoomEnd }) => {
   useMapEvent('zoomend', handleZoomEnd);
   return null;
 };
 
 
-const Heatmap = ({ heatmapData, changeResolutionWhenZoom }) => {
+const Heatmap = ({ heatmapData, thresholds, changeResolutionWhenZoom }) => {
 
   const [map, setMap] = useState(null);
 
@@ -44,7 +54,7 @@ const Heatmap = ({ heatmapData, changeResolutionWhenZoom }) => {
       <ZoomEventHandlers handleZoomEnd={handleZoomEnd} />
       {heatmapData.map(({ h3Index, count }) => {
         const boundaries = cellToBoundary(h3Index);
-        const color = getColorForCount(count);
+        const color = getColorForCountWithThreshold(thresholds, count);
         return (
           <Polygon key={h3Index} positions={boundaries} color={color} fillOpacity={0.7} />
         );
