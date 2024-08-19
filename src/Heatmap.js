@@ -80,7 +80,13 @@ const Heatmap = ({ heatmapData, thresholds, changeResolutionWhenZoom, dataSetSel
         const boundaries = cellToBoundary(h3Index);
         const color = getColor(thresholds, count);
         return (
-          <Polygon key={h3Index} positions={boundaries} color={color} fillOpacity={0.7} />
+          <Polygon 
+          key={h3Index}
+          positions={boundaries}
+          pathOptions={{  
+            color: color,
+            fillOpacity: 0.7
+          }} />
         );
       })}
     </MapContainer>
