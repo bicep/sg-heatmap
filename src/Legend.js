@@ -20,13 +20,15 @@ function Legend({ map, getColor, thresholds }) {
         for (let i = 0; i < thresholds.length; i++) {
           from = thresholds[i];
           to = thresholds[i + 1];
+          const fromRounded = Math.round(from * 100) / 100;
+          const toRounded = Math.round(to * 100) / 100;
   
           labels.push(
             '<i style="background:' +
               getColor(thresholds, from + 1) +
               '"></i> ' +
-              from +
-              (to ? "&ndash;" + to : "+")
+              fromRounded +
+              (toRounded ? "&ndash;" + toRounded : "+")
           );
         }
   

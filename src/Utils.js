@@ -27,13 +27,18 @@ export const aggregatePointData = (data, resolution) => {
          // lat lon problems
          h3Index = latLngToCell(parseFloat(point.lat), parseFloat(point.lon), resolution);
       } catch (e) {
-         // undefined
-         console.log(`${point.lat} and lon ${point.lon}`);
+         // undefined values- ignore
+         // console.log(`${point.lat} and lon ${point.lon}`);
          return
+      }
+
+      // if it is zero value just ignore
+      if (parseFloat(point[valueFieldName]) === 0) {
+        return;
       }
       // console.log(point[valueFieldName]);
       if (h3Map[h3Index]) {
-         h3Map[h3Index] = h3Map[h3Index] + parseInt(point[valueFieldName]);
+         h3Map[h3Index] = h3Map[h3Index] + parseFloat(point[valueFieldName]);
       } else {
          h3Map[h3Index] = parseInt(point[valueFieldName]);
       }

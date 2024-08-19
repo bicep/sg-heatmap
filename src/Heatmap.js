@@ -5,31 +5,31 @@ import "leaflet/dist/leaflet.css";
 import Legend from './Legend';
 
 
-const getColorForCount = (count) => {
-  return count > 500 ? '#00441b' :
-         count > 300  ? '#006d2c' :
-         count > 100  ? '#228B22' :
-         count > 50  ? '#32CD32' :
-         count > 10   ? '#7FFF00' :
-                       '#ADFF2F';
+const getColorForCountWithThresholdGreen = (thresholds, count) => {
+  return count > thresholds[4] ? '#00441b' :    // Dark green
+         count > thresholds[3]  ? '#006d2c' :   // Forest green
+         count > thresholds[2]  ? '#238b45' :   // Medium green
+         count > thresholds[1]  ? '#41ab5d' :   // Light green
+         count > thresholds[0]   ? '#74c476' :  // Lighter green
+                                   '#a1d99b';   // Pale green
 };
 
-// const getColorForCountWithThreshold = (thresholds, count) => {
-//   return count > thresholds[4] ? '#00441b' :
-//          count > thresholds[3]  ? '#006d2c' :
-//          count > thresholds[2]  ? '#228B22' :
-//          count > thresholds[1]  ? '#32CD32' :
-//          count > thresholds[0]   ? '#7FFF00' :
-//                        '#ADFF2F';
-// };
-
-const getColorForCountWithThreshold = (thresholds, count) => {
+const getColorForCountWithThresholdOrange = (thresholds, count) => {
   return count > thresholds[4] ? '#7f2704' :    // Darker orange-brown
          count > thresholds[3]  ? '#a63603' :   // Dark orange-brown
          count > thresholds[2]  ? '#d94801' :   // Bright orange
          count > thresholds[1]  ? '#f16913' :   // Lighter orange
          count > thresholds[0]   ? '#fd8d3c' :   // Light orange
                                    '#fdae6b';   // Pale orange
+};
+
+const getColorForCountWithThresholdBlue = (thresholds, count) => {
+  return count > thresholds[4] ? '#08306b' :    // Dark navy blue
+         count > thresholds[3]  ? '#08519c' :   // Dark blue
+         count > thresholds[2]  ? '#2171b5' :   // Medium blue
+         count > thresholds[1]  ? '#4292c6' :   // Light blue
+         count > thresholds[0]   ? '#6baed6' :  // Lighter blue
+                                   '#9ecae1';   // Pale blue
 };
 
 
@@ -39,10 +39,25 @@ const ZoomEventHandlers = ({ handleZoomEnd }) => {
 };
 
 
-const Heatmap = ({ heatmapData, thresholds, changeResolutionWhenZoom }) => {
+const Heatmap = ({ heatmapData, thresholds, changeResolutionWhenZoom, dataSetSelection }) => {
+
+  let getColor;
+  // check which data and set color
+  switch (dataSetSelection) {
+    case "tree":
+      getColor = getColorForCountWithThresholdGreen;
+      break;
+    case "hdb":
+      getColor = getColorForCountWithThresholdOrange
+      break;
+    case "worldpop":
+      getColor = getColorForCountWithThresholdBlue;
+    break;
+    default:
+      getColor = getColorForCountWithThresholdBlue;
+  }
 
   const [map, setMap] = useState(null);
-
 
   const handleZoomEnd = (e) => {
     // console.log('Map zoom level:', e.target.getZoom());
@@ -59,11 +74,11 @@ const Heatmap = ({ heatmapData, thresholds, changeResolutionWhenZoom }) => {
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Legend map={map} getColor={getColorForCountWithThreshold} thresholds={thresholds}/>
+      <Legend map={map} getColor={getColor} thresholds={thresholds}/>
       <ZoomEventHandlers handleZoomEnd={handleZoomEnd} />
       {heatmapData.map(({ h3Index, count }) => {
         const boundaries = cellToBoundary(h3Index);
-        const color = getColorForCountWithThreshold(thresholds, count);
+        const color = getColor(thresholds, count);
         return (
           <Polygon key={h3Index} positions={boundaries} color={color} fillOpacity={0.7} />
         );

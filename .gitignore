@@ -25,9 +25,13 @@ yarn-error.log*
 /src/tree_script.js
 /src/hdb_script.js
 /src/elderly_script.js
+/src/worldpop_script.js
 /src/trees.json
 /public/trees.csv
 /src/hdb.json
 /public/hdb.csv
 /src/elderly.json
 /public/elderly.csv
+/src/worldpop.json
+/public/worldpop.csv
+

@@ -6,6 +6,7 @@ const App = () => {
   const [dataSetSelection, setDataSetSelection] = useState("hdb");
   const [rawTreeData, setRawTreeData] = useState([]);
   const [rawHDBData, setRawHDBData] = useState([]);
+  const [rawWorldPopData, setrawWorldPopData] = useState([]);
   const [resolution, setResolution] = useState(8); // Set a default resolution, this can be made dynamic later
 
   function randomSample(data, sampleSize) {
@@ -23,11 +24,15 @@ const App = () => {
     };
     const fetchHDBData = async () => {
       const HDBData = await require("./hdb.json");
-      // const smallerHDBData = randomSample(HDBData, 100000);
       setRawHDBData(HDBData);
+    };
+    const fetchWorldpopData = async () => {
+      const worldPopData = await require("./worldpop.json");
+      setrawWorldPopData(worldPopData);
     };
     fetchTreeData();
     fetchHDBData();
+    fetchWorldpopData();
   }, [])
 
   const changeResolutionWhenZoom = (newResolution) => {
@@ -45,6 +50,9 @@ const App = () => {
     case "hdb":
       heatMapDataToDisplay = aggregateValueData(rawHDBData, resolution, "maxFloor");
       break;
+    case "worldpop":
+      heatMapDataToDisplay = aggregateValueData(rawWorldPopData, resolution, "populationDensity");
+    break;
     default:
       heatMapDataToDisplay = [];
   }
@@ -54,7 +62,12 @@ const App = () => {
   return (
     <div>
       <h1>{`Singapore ${dataSetSelection} Heatmap`}</h1>
-      <Heatmap heatmapData={heatMapDataToDisplay} thresholds={thresholds} changeResolutionWhenZoom={changeResolutionWhenZoom} />
+      <Heatmap
+        heatmapData={heatMapDataToDisplay}
+        thresholds={thresholds}
+        changeResolutionWhenZoom={changeResolutionWhenZoom}
+        dataSetSelection={dataSetSelection}
+       />
     </div>
   );
 };
