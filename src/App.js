@@ -7,10 +7,10 @@ import { aggregatePointData,
 import { Constants } from './Constants';
 
 const App = () => {
-  const [dataSetSelection, setDataSetSelection] = useState(Constants.populationDensity);
+  const [dataSetSelection, setDataSetSelection] = useState(Constants.tree);
   const [rawTreeData, setRawTreeData] = useState([]);
   const [rawHDBData, setRawHDBData] = useState([]);
-  const [rawWorldPopData, setrawWorldPopData] = useState([]);
+  const [rawWorldPopData, setRawWorldPopData] = useState([]);
   const [resolution, setResolution] = useState(8); // Set a default resolution, this can be made dynamic later
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const App = () => {
     };
     const fetchWorldpopData = async () => {
       const worldPopData = await require("./worldpop.json");
-      setrawWorldPopData(worldPopData);
+      setRawWorldPopData(worldPopData);
     };
     fetchTreeData();
     fetchHDBData();
@@ -37,6 +37,16 @@ const App = () => {
     setResolution(newResolution);
   };
 
+  const t = () => {
+    setDataSetSelection(Constants.tree)
+  }
+  const h = () => {
+    setDataSetSelection(Constants.hdb)
+  }
+  const w = () => {
+    setDataSetSelection(Constants.populationDensity)
+  }
+  
   let heatMapDataToDisplay;
   // check if tree of hdb data
   switch (dataSetSelection) {
@@ -62,9 +72,9 @@ const App = () => {
           <h1>{`Singapore ${dataSetSelection} Heatmap`}</h1>
         </div>
         <div>
-          <button onClick={()=>setDataSetSelection(Constants.tree)}>{Constants.tree}</button>
-          <button onClick={()=>setDataSetSelection(Constants.hdb)}>{Constants.hdb}</button>
-          <button onClick={()=>setDataSetSelection(Constants.populationDensity)}>{Constants.populationDensity}</button>
+          <button onClick={t}>{Constants.tree}</button>
+          <button onClick={h}>{Constants.hdb}</button>
+          <button onClick={w}>{Constants.populationDensity}</button>
           </div>
         </div>
 
