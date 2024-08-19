@@ -38,7 +38,7 @@ function Legend({ map, getColor, thresholds }) {
       legend.addTo(map);
       setControl(legend);
     }
-  }, [map, thresholds]);
+  }, [thresholds]);
   return null;
 }
 

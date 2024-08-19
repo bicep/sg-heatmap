@@ -3,7 +3,7 @@ import Heatmap from './Heatmap';
 import { aggregatePointData, aggregateValueData, calculateDivisions } from './Utils';
 
 const App = () => {
-  const [dataSetSelection, setDataSetSelection] = useState("tree");
+  const [dataSetSelection, setDataSetSelection] = useState("hdb");
   const [rawTreeData, setRawTreeData] = useState([]);
   const [rawHDBData, setRawHDBData] = useState([]);
   const [resolution, setResolution] = useState(8); // Set a default resolution, this can be made dynamic later

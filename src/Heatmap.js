@@ -14,13 +14,22 @@ const getColorForCount = (count) => {
                        '#ADFF2F';
 };
 
+// const getColorForCountWithThreshold = (thresholds, count) => {
+//   return count > thresholds[4] ? '#00441b' :
+//          count > thresholds[3]  ? '#006d2c' :
+//          count > thresholds[2]  ? '#228B22' :
+//          count > thresholds[1]  ? '#32CD32' :
+//          count > thresholds[0]   ? '#7FFF00' :
+//                        '#ADFF2F';
+// };
+
 const getColorForCountWithThreshold = (thresholds, count) => {
-  return count > thresholds[4] ? '#00441b' :
-         count > thresholds[3]  ? '#006d2c' :
-         count > thresholds[2]  ? '#228B22' :
-         count > thresholds[1]  ? '#32CD32' :
-         count > thresholds[0]   ? '#7FFF00' :
-                       '#ADFF2F';
+  return count > thresholds[4] ? '#7f2704' :    // Darker orange-brown
+         count > thresholds[3]  ? '#a63603' :   // Dark orange-brown
+         count > thresholds[2]  ? '#d94801' :   // Bright orange
+         count > thresholds[1]  ? '#f16913' :   // Lighter orange
+         count > thresholds[0]   ? '#fd8d3c' :   // Light orange
+                                   '#fdae6b';   // Pale orange
 };
 
 
