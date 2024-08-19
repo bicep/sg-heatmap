@@ -67,3 +67,9 @@ export const aggregatePointData = (data, resolution) => {
 
   return thresholds;
 };
+
+export const randomSample = (data, sampleSize) => {
+  const totalRows = data.length;
+  const indices = Array.from({ length: sampleSize }, (_, i) => Math.floor(Math.random() * totalRows));
+  return indices.map(index => data[index]);
+}

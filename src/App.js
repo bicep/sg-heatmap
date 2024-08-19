@@ -1,19 +1,17 @@
 import React, { useEffect, useState} from 'react';
 import Heatmap from './Heatmap';
-import { aggregatePointData, aggregateValueData, calculateDivisions } from './Utils';
+import { aggregatePointData,
+  aggregateValueData,
+  calculateDivisions,
+  randomSample } from './Utils';
+import { Constants } from './Constants';
 
 const App = () => {
-  const [dataSetSelection, setDataSetSelection] = useState("hdb");
+  const [dataSetSelection, setDataSetSelection] = useState(Constants.populationDensity);
   const [rawTreeData, setRawTreeData] = useState([]);
   const [rawHDBData, setRawHDBData] = useState([]);
   const [rawWorldPopData, setrawWorldPopData] = useState([]);
   const [resolution, setResolution] = useState(8); // Set a default resolution, this can be made dynamic later
-
-  function randomSample(data, sampleSize) {
-    const totalRows = data.length;
-    const indices = Array.from({ length: sampleSize }, (_, i) => Math.floor(Math.random() * totalRows));
-    return indices.map(index => data[index]);
-  }
 
   useEffect(() => {
     // load data
@@ -39,18 +37,16 @@ const App = () => {
     setResolution(newResolution);
   };
 
-
-
   let heatMapDataToDisplay;
   // check if tree of hdb data
   switch (dataSetSelection) {
-    case "tree":
+    case Constants.tree:
       heatMapDataToDisplay = aggregatePointData(rawTreeData, resolution);
       break;
-    case "hdb":
+    case Constants.hdb:
       heatMapDataToDisplay = aggregateValueData(rawHDBData, resolution, "maxFloor");
       break;
-    case "worldpop":
+    case Constants.populationDensity:
       heatMapDataToDisplay = aggregateValueData(rawWorldPopData, resolution, "populationDensity");
     break;
     default:
@@ -61,7 +57,17 @@ const App = () => {
 
   return (
     <div>
-      <h1>{`Singapore ${dataSetSelection} Heatmap`}</h1>
+      <div>
+        <div >
+          <h1>{`Singapore ${dataSetSelection} Heatmap`}</h1>
+        </div>
+        <div>
+          <button onClick={()=>setDataSetSelection(Constants.tree)}>{Constants.tree}</button>
+          <button onClick={()=>setDataSetSelection(Constants.hdb)}>{Constants.hdb}</button>
+          <button onClick={()=>setDataSetSelection(Constants.populationDensity)}>{Constants.populationDensity}</button>
+          </div>
+        </div>
+
       <Heatmap
         heatmapData={heatMapDataToDisplay}
         thresholds={thresholds}

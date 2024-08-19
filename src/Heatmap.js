@@ -1,8 +1,10 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { MapContainer, TileLayer, useMapEvent, Polygon } from 'react-leaflet';
+import L from "leaflet";
 import { cellToBoundary } from 'h3-js';
 import "leaflet/dist/leaflet.css";
 import Legend from './Legend';
+import { Constants } from './Constants';
 
 
 const getColorForCountWithThresholdGreen = (thresholds, count) => {
@@ -40,24 +42,47 @@ const ZoomEventHandlers = ({ handleZoomEnd }) => {
 
 
 const Heatmap = ({ heatmapData, thresholds, changeResolutionWhenZoom, dataSetSelection }) => {
+  const [map, setMap] = useState(null);
+  const [polygons, setPolygons] = useState([]);
+
+  // if (map!=null) {
+  //   map.eachLayer(function (layer) {
+  //     if (layer._path != null) {
+  //       map.removeLayer(layer);
+  //     }
+  //   });
+  // }
+
+  useEffect(() => {
+    // Clear existing polygons when heatmapData changes
+    setPolygons(
+      heatmapData.map(({ h3Index, count }) => {
+        const boundaries = cellToBoundary(h3Index);
+        const color = getColor(thresholds, count);
+        return {
+          h3Index,
+          boundaries,
+          color,
+        };
+      })
+    );
+  }, [heatmapData, thresholds]);
 
   let getColor;
   // check which data and set color
   switch (dataSetSelection) {
-    case "tree":
+    case Constants.tree:
       getColor = getColorForCountWithThresholdGreen;
       break;
-    case "hdb":
+    case Constants.hdb:
       getColor = getColorForCountWithThresholdOrange
       break;
-    case "worldpop":
+    case Constants.populationDensity:
       getColor = getColorForCountWithThresholdBlue;
     break;
     default:
       getColor = getColorForCountWithThresholdBlue;
   }
-
-  const [map, setMap] = useState(null);
 
   const handleZoomEnd = (e) => {
     // console.log('Map zoom level:', e.target.getZoom());
@@ -76,13 +101,9 @@ const Heatmap = ({ heatmapData, thresholds, changeResolutionWhenZoom, dataSetSel
       />
       <Legend map={map} getColor={getColor} thresholds={thresholds}/>
       <ZoomEventHandlers handleZoomEnd={handleZoomEnd} />
-      {heatmapData.map(({ h3Index, count }) => {
-        const boundaries = cellToBoundary(h3Index);
-        const color = getColor(thresholds, count);
-        return (
-          <Polygon key={h3Index} positions={boundaries} color={color} fillOpacity={0.7} />
-        );
-      })}
+      {polygons.map(({ h3Index, boundaries, color }) => (
+        <Polygon key={h3Index} positions={boundaries} color={color} fillOpacity={0.7} />
+      ))}
     </MapContainer>
   );
 };
