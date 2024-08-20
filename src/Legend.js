@@ -3,7 +3,7 @@ import L from "leaflet";
 import "./Legend.css";
 import { getColorForCountWithThreshold } from './Utils';
 
-function Legend({ map, colorSpectrum, thresholds }) {
+function Legend({ map, thresholdsWithColor }) {
   const [control, setControl] = useState(L.control({ position: "bottomright" }));
 
   useEffect(() => {
@@ -14,25 +14,27 @@ function Legend({ map, colorSpectrum, thresholds }) {
 
       legend.onAdd = () => {
         const div = L.DomUtil.create("div", "info legend");
+
         let labels = [];
-        let from;
-        let to;
-  
-        for (let i = 0; i < thresholds.length; i++) {
-          from = thresholds[i];
-          to = thresholds[i + 1];
-          const fromRounded = Math.round(from * 100) / 100;
-          const toRounded = Math.round(to * 100) / 100;
-  
-          labels.push(
-            '<i style="background:' +
-              getColorForCountWithThreshold(thresholds, from + 1, colorSpectrum) +
-              '"></i> ' +
-              fromRounded +
-              (toRounded ? "&ndash;" + toRounded : "+")
-          );
+        // multiple thresholds (eg if hdb data and trees data are selected at the same time)
+        for (let i = 0; i< thresholdsWithColor.length; i++) {
+          labels.push(`${thresholdsWithColor[i].name}`)
+          let from;
+          let to;
+          for (let j = 0; j < thresholdsWithColor[i].thresholds.length; j++) {
+            from = thresholdsWithColor[i].thresholds[j];
+            to = thresholdsWithColor[i].thresholds[j + 1];
+            const fromRounded = Math.round(from * 100) / 100;
+            const toRounded = Math.round(to * 100) / 100;
+    
+            labels.push(
+              `<i style="background:
+                ${getColorForCountWithThreshold(thresholdsWithColor[i].thresholds, from + 1, thresholdsWithColor[i].colorSpectrum)}"></i> 
+                ${fromRounded}
+                ${(toRounded ? "&ndash;" + toRounded : "+")}`
+            );
+          }
         }
-  
         div.innerHTML = labels.join("<br>");
         return div;
       };
@@ -41,7 +43,7 @@ function Legend({ map, colorSpectrum, thresholds }) {
       legend.addTo(map);
       setControl(legend);
     }
-  }, [thresholds]);
+  }, [thresholdsWithColor]);
   return null;
 }
 

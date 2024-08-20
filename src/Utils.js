@@ -1,22 +1,30 @@
 import { latLngToCell } from 'h3-js';
 
-export const preparePointData = (rawData, resolution, colorSpectrum, thresholdDivisions) => {
+export const preparePointData = (dataSetSelection, rawData, resolution, colorSpectrum, thresholdDivisions) => {
       let heatMapDataToDisplay = aggregatePointData(rawData, resolution);
       const thresholds = calculateDivisions(heatMapDataToDisplay, thresholdDivisions);
       heatMapDataToDisplay = assignColorToDataSet(heatMapDataToDisplay, thresholds, colorSpectrum);
       return {
         heatMapDataToDisplay,
-        thresholds
+        thresholdsWithColor: [{
+          name: dataSetSelection,
+          thresholds,
+          colorSpectrum,
+        }]
       }
 }
 
-export const prepareValueData = (rawData, resolution, valueColumnName, colorSpectrum, thresholdDivisions) => {
+export const prepareValueData = (dataSetSelection, rawData, resolution, valueColumnName, colorSpectrum, thresholdDivisions) => {
   let heatMapDataToDisplay = aggregateValueData(rawData, resolution, valueColumnName);
   const thresholds = calculateDivisions(heatMapDataToDisplay, thresholdDivisions);
   heatMapDataToDisplay = assignColorToDataSet(heatMapDataToDisplay, thresholds, colorSpectrum);
   return {
     heatMapDataToDisplay,
-    thresholds
+    thresholdsWithColor: [{
+      name: dataSetSelection,
+      thresholds,
+      colorSpectrum,
+    }]
   }
 }
 

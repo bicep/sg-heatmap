@@ -13,24 +13,8 @@ const ZoomEventHandlers = ({ handleZoomEnd }) => {
 };
 
 
-const Heatmap = ({ heatmapData, thresholds, changeResolutionWhenZoom, dataSetSelection }) => {
+const Heatmap = ({ heatmapData, thresholdsWithColor, changeResolutionWhenZoom }) => {
   const [map, setMap] = useState(null);
-
-  let colorSpectrum;
-  // check which data and set color
-  switch (dataSetSelection) {
-    case Constants.tree:
-      colorSpectrum = Constants.greenSpectrum;
-      break;
-    case Constants.hdb:
-      colorSpectrum = Constants.orangeSpectrum
-      break;
-    case Constants.populationDensity:
-      colorSpectrum = Constants.blueSpectrum;
-    break;
-    default:
-      colorSpectrum = Constants.blueSpectrum;
-  }
 
   const handleZoomEnd = (e) => {
     // console.log('Map zoom level:', e.target.getZoom());
@@ -47,13 +31,13 @@ const Heatmap = ({ heatmapData, thresholds, changeResolutionWhenZoom, dataSetSel
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Legend map={map} colorSpectrum={colorSpectrum} thresholds={thresholds}/>
+      <Legend map={map} thresholdsWithColor={thresholdsWithColor}/>
       <ZoomEventHandlers handleZoomEnd={handleZoomEnd} />
       {heatmapData.map(({ h3Index, count, color }) => {
         const boundaries = cellToBoundary(h3Index);
         return (
           <Polygon 
-          key={h3Index}
+          key={h3Index.concat(color)}
           positions={boundaries}
           pathOptions={{  
             color: color,

@@ -36,12 +36,13 @@ const App = () => {
 
     // main logic: data prep based on the data that is selected
   
-  let heatMapDataToDisplay;
-  let thresholds;
+  let heatMapDataToDisplay = [];
+  let thresholdsWithColor = [];
   
   switch (dataSetSelection) {
     case Constants.tree:
-      ({ heatMapDataToDisplay, thresholds } = preparePointData(
+      ({ heatMapDataToDisplay, thresholdsWithColor } = preparePointData(
+        dataSetSelection,
         rawTreeData,
         resolution,
         Constants.greenSpectrum,
@@ -49,7 +50,8 @@ const App = () => {
       ));
       break;
     case Constants.hdb:
-      ({ heatMapDataToDisplay, thresholds } = prepareValueData(
+      ({ heatMapDataToDisplay, thresholdsWithColor } = prepareValueData(
+        dataSetSelection,
         rawHDBData,
         resolution,
         "maxFloor",
@@ -58,7 +60,8 @@ const App = () => {
       ));
       break;
     case Constants.populationDensity:
-      ({ heatMapDataToDisplay, thresholds } = prepareValueData(
+      ({ heatMapDataToDisplay, thresholdsWithColor } = prepareValueData(
+        dataSetSelection,
         rawWorldPopData,
         resolution,
         "populationDensity",
@@ -67,10 +70,29 @@ const App = () => {
       ));
       break;
     case Constants.insights:
+      const { heatMapDataToDisplay: treeHeatMapData, thresholdsWithColor: treeThresholds } = preparePointData(
+        Constants.tree,
+        rawTreeData,
+        resolution,
+        Constants.greenSpectrum,
+        Constants.thresholdDivisions
+      );
+
+      const { heatMapDataToDisplay: pdHeatMapData, thresholdsWithColor: pdThresholds } = prepareValueData(
+        Constants.populationDensity,
+        rawWorldPopData,
+        resolution,
+        "populationDensity",
+        Constants.blueSpectrum,
+        Constants.thresholdDivisions
+      );
+
+      heatMapDataToDisplay = treeHeatMapData.concat(pdHeatMapData);
+      thresholdsWithColor = treeThresholds.concat(pdThresholds);
       break;
     default:
       heatMapDataToDisplay = [];
-      thresholds = [];
+      thresholdsWithColor = [];
   }
 
   return (
@@ -89,7 +111,7 @@ const App = () => {
 
       <Heatmap
         heatmapData={heatMapDataToDisplay}
-        thresholds={thresholds}
+        thresholdsWithColor={thresholdsWithColor}
         changeResolutionWhenZoom={changeResolutionWhenZoom}
         dataSetSelection={dataSetSelection}
        />
