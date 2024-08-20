@@ -68,6 +68,15 @@ export const aggregatePointData = (data, resolution) => {
   return thresholds;
 };
 
+export const getColorForCountWithThreshold = (thresholds, count, colorSpectrum) => {
+  return count > thresholds[4] ? colorSpectrum[5] :  
+         count > thresholds[3]  ? colorSpectrum[4] :   
+         count > thresholds[2]  ? colorSpectrum[3] :   
+         count > thresholds[1]  ? colorSpectrum[2] :   
+         count > thresholds[0]   ? colorSpectrum[1] :  
+                                   colorSpectrum[0];   
+};
+
 export const randomSample = (data, sampleSize) => {
   const totalRows = data.length;
   const indices = Array.from({ length: sampleSize }, (_, i) => Math.floor(Math.random() * totalRows));

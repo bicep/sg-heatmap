@@ -48,12 +48,17 @@ const App = () => {
       break;
     case Constants.populationDensity:
       heatMapDataToDisplay = aggregateValueData(rawWorldPopData, resolution, "populationDensity");
-    break;
+      break;
+    case Constants.insights:
+      const treeHeatMapData = aggregatePointData(rawTreeData, resolution);
+      const pDHeatMapData = aggregateValueData(rawWorldPopData, resolution, "populationDensity");
+      const thresholds = calculateDivisions(treeHeatMapData, Constants.thresholdDivisions);
+      break;
     default:
       heatMapDataToDisplay = [];
   }
 
-  const thresholds = calculateDivisions(heatMapDataToDisplay, 6);
+  const thresholds = calculateDivisions(heatMapDataToDisplay, Constants.thresholdDivisions);
 
   return (
     <div>
@@ -65,6 +70,7 @@ const App = () => {
           <button onClick={()=>setDataSetSelection(Constants.tree)}>{Constants.tree}</button>
           <button onClick={()=>setDataSetSelection(Constants.hdb)}>{Constants.hdb}</button>
           <button onClick={()=>setDataSetSelection(Constants.populationDensity)}>{Constants.populationDensity}</button>
+          <button onClick={()=>setDataSetSelection(Constants.insights)}>{Constants.insights}</button>
           </div>
         </div>
 

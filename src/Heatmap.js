@@ -4,34 +4,7 @@ import { cellToBoundary } from 'h3-js';
 import "leaflet/dist/leaflet.css";
 import Legend from './Legend';
 import { Constants } from './Constants';
-
-
-const getColorForCountWithThresholdGreen = (thresholds, count) => {
-  return count > thresholds[4] ? '#00441b' :    // Dark green
-         count > thresholds[3]  ? '#006d2c' :   // Forest green
-         count > thresholds[2]  ? '#238b45' :   // Medium green
-         count > thresholds[1]  ? '#41ab5d' :   // Light green
-         count > thresholds[0]   ? '#74c476' :  // Lighter green
-                                   '#a1d99b';   // Pale green
-};
-
-const getColorForCountWithThresholdOrange = (thresholds, count) => {
-  return count > thresholds[4] ? '#7f2704' :    // Darker orange-brown
-         count > thresholds[3]  ? '#a63603' :   // Dark orange-brown
-         count > thresholds[2]  ? '#d94801' :   // Bright orange
-         count > thresholds[1]  ? '#f16913' :   // Lighter orange
-         count > thresholds[0]   ? '#fd8d3c' :   // Light orange
-                                   '#fdae6b';   // Pale orange
-};
-
-const getColorForCountWithThresholdBlue = (thresholds, count) => {
-  return count > thresholds[4] ? '#08306b' :    // Dark navy blue
-         count > thresholds[3]  ? '#08519c' :   // Dark blue
-         count > thresholds[2]  ? '#2171b5' :   // Medium blue
-         count > thresholds[1]  ? '#4292c6' :   // Light blue
-         count > thresholds[0]   ? '#6baed6' :  // Lighter blue
-                                   '#9ecae1';   // Pale blue
-};
+import { getColorForCountWithThreshold } from './Utils';
 
 
 const ZoomEventHandlers = ({ handleZoomEnd }) => {
@@ -43,20 +16,20 @@ const ZoomEventHandlers = ({ handleZoomEnd }) => {
 const Heatmap = ({ heatmapData, thresholds, changeResolutionWhenZoom, dataSetSelection }) => {
   const [map, setMap] = useState(null);
 
-  let getColor;
+  let colorSpectrum;
   // check which data and set color
   switch (dataSetSelection) {
     case Constants.tree:
-      getColor = getColorForCountWithThresholdGreen;
+      colorSpectrum = Constants.greenSpectrum;
       break;
     case Constants.hdb:
-      getColor = getColorForCountWithThresholdOrange
+      colorSpectrum = Constants.orangeSpectrum
       break;
     case Constants.populationDensity:
-      getColor = getColorForCountWithThresholdBlue;
+      colorSpectrum = Constants.blueSpectrum;
     break;
     default:
-      getColor = getColorForCountWithThresholdBlue;
+      colorSpectrum = Constants.blueSpectrum;
   }
 
   const handleZoomEnd = (e) => {
@@ -74,11 +47,11 @@ const Heatmap = ({ heatmapData, thresholds, changeResolutionWhenZoom, dataSetSel
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Legend map={map} getColor={getColor} thresholds={thresholds}/>
+      <Legend map={map} colorSpectrum={colorSpectrum} thresholds={thresholds}/>
       <ZoomEventHandlers handleZoomEnd={handleZoomEnd} />
       {heatmapData.map(({ h3Index, count }) => {
         const boundaries = cellToBoundary(h3Index);
-        const color = getColor(thresholds, count);
+        const color = getColorForCountWithThreshold(thresholds, count, colorSpectrum);
         return (
           <Polygon 
           key={h3Index}

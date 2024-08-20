@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import L from "leaflet";
 import "./Legend.css";
+import { getColorForCountWithThreshold } from './Utils';
 
-function Legend({ map, getColor, thresholds }) {
+function Legend({ map, colorSpectrum, thresholds }) {
   const [control, setControl] = useState(L.control({ position: "bottomright" }));
 
   useEffect(() => {
@@ -25,7 +26,7 @@ function Legend({ map, getColor, thresholds }) {
   
           labels.push(
             '<i style="background:' +
-              getColor(thresholds, from + 1) +
+              getColorForCountWithThreshold(thresholds, from + 1, colorSpectrum) +
               '"></i> ' +
               fromRounded +
               (toRounded ? "&ndash;" + toRounded : "+")
