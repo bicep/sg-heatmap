@@ -5,7 +5,6 @@ import "leaflet/dist/leaflet.css";
 import "./Heatmap.css";
 import Legend from './Legend';
 import { Constants } from './Constants';
-import { getColorForCountWithThreshold } from './Utils';
 
 
 const ZoomEventHandlers = ({ handleZoomEnd }) => {
@@ -50,9 +49,8 @@ const Heatmap = ({ heatmapData, thresholds, changeResolutionWhenZoom, dataSetSel
       />
       <Legend map={map} colorSpectrum={colorSpectrum} thresholds={thresholds}/>
       <ZoomEventHandlers handleZoomEnd={handleZoomEnd} />
-      {heatmapData.map(({ h3Index, count }) => {
+      {heatmapData.map(({ h3Index, count, color }) => {
         const boundaries = cellToBoundary(h3Index);
-        const color = getColorForCountWithThreshold(thresholds, count, colorSpectrum);
         return (
           <Polygon 
           key={h3Index}

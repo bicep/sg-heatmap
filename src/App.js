@@ -1,9 +1,6 @@
 import React, { useEffect, useState} from 'react';
 import Heatmap from './Heatmap';
-import { aggregatePointData,
-  aggregateValueData,
-  calculateDivisions,
-  randomSample } from './Utils';
+import { randomSample, preparePointData, prepareValueData} from './Utils';
 import { Constants } from './Constants';
 
 const App = () => {
@@ -36,29 +33,45 @@ const App = () => {
   const changeResolutionWhenZoom = (newResolution) => {
     setResolution(newResolution);
   };
+
+    // main logic: data prep based on the data that is selected
   
   let heatMapDataToDisplay;
-  // check if tree of hdb data
+  let thresholds;
+  
   switch (dataSetSelection) {
     case Constants.tree:
-      heatMapDataToDisplay = aggregatePointData(rawTreeData, resolution);
+      ({ heatMapDataToDisplay, thresholds } = preparePointData(
+        rawTreeData,
+        resolution,
+        Constants.greenSpectrum,
+        Constants.thresholdDivisions
+      ));
       break;
     case Constants.hdb:
-      heatMapDataToDisplay = aggregateValueData(rawHDBData, resolution, "maxFloor");
+      ({ heatMapDataToDisplay, thresholds } = prepareValueData(
+        rawHDBData,
+        resolution,
+        "maxFloor",
+        Constants.orangeSpectrum,
+        Constants.thresholdDivisions
+      ));
       break;
     case Constants.populationDensity:
-      heatMapDataToDisplay = aggregateValueData(rawWorldPopData, resolution, "populationDensity");
+      ({ heatMapDataToDisplay, thresholds } = prepareValueData(
+        rawWorldPopData,
+        resolution,
+        "populationDensity",
+        Constants.blueSpectrum,
+        Constants.thresholdDivisions
+      ));
       break;
     case Constants.insights:
-      const treeHeatMapData = aggregatePointData(rawTreeData, resolution);
-      const pDHeatMapData = aggregateValueData(rawWorldPopData, resolution, "populationDensity");
-      const thresholds = calculateDivisions(treeHeatMapData, Constants.thresholdDivisions);
       break;
     default:
       heatMapDataToDisplay = [];
+      thresholds = [];
   }
-
-  const thresholds = calculateDivisions(heatMapDataToDisplay, Constants.thresholdDivisions);
 
   return (
     <div>
