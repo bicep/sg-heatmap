@@ -1,10 +1,10 @@
 import React, { useEffect, useState} from 'react';
 import Heatmap from './Heatmap';
-import { randomSample, preparePointData, prepareValueData} from './Utils';
+import { randomSample, preparePointData, prepareValueData, checkButtonHandler} from './Utils';
 import { Constants } from './Constants';
 
 const App = () => {
-  const [dataSetSelection, setDataSetSelection] = useState(Constants.tree);
+  const [dataSetSelections, setDataSetSelections] = useState([Constants.tree]);
   const [rawTreeData, setRawTreeData] = useState([]);
   const [rawHDBData, setRawHDBData] = useState([]);
   const [rawWorldPopData, setRawWorldPopData] = useState([]);
@@ -34,86 +34,103 @@ const App = () => {
     setResolution(newResolution);
   };
 
+  const treeCheckButtonHandler = (e) => {
+    checkButtonHandler(e, Constants.tree, dataSetSelections, setDataSetSelections)
+  }
+
+  const hdbCheckButtonHandler = (e) => {
+    checkButtonHandler(e, Constants.hdb, dataSetSelections, setDataSetSelections)
+  }
+
+  const pdCheckButtonHandler = (e) => {
+    checkButtonHandler(e, Constants.populationDensity, dataSetSelections, setDataSetSelections)
+  }
+
     // main logic: data prep based on the data that is selected
   
-  let heatMapDataToDisplay = [];
-  let thresholdsWithColor = [];
+  let heatMapData = [];
+  let thresholds = [];
   
-  switch (dataSetSelection) {
-    case Constants.tree:
-      ({ heatMapDataToDisplay, thresholdsWithColor } = preparePointData(
-        dataSetSelection,
-        rawTreeData,
-        resolution,
-        Constants.greenSpectrum,
-        Constants.thresholdDivisions
-      ));
-      break;
-    case Constants.hdb:
-      ({ heatMapDataToDisplay, thresholdsWithColor } = prepareValueData(
-        dataSetSelection,
-        rawHDBData,
-        resolution,
-        "maxFloor",
-        Constants.orangeSpectrum,
-        Constants.thresholdDivisions
-      ));
-      break;
-    case Constants.populationDensity:
-      ({ heatMapDataToDisplay, thresholdsWithColor } = prepareValueData(
-        dataSetSelection,
-        rawWorldPopData,
-        resolution,
-        "populationDensity",
-        Constants.blueSpectrum,
-        Constants.thresholdDivisions
-      ));
-      break;
-    case Constants.insights:
-      const { heatMapDataToDisplay: treeHeatMapData, thresholdsWithColor: treeThresholds } = preparePointData(
-        Constants.tree,
-        rawTreeData,
-        resolution,
-        Constants.greenSpectrum,
-        Constants.thresholdDivisions
-      );
-
-      const { heatMapDataToDisplay: pdHeatMapData, thresholdsWithColor: pdThresholds } = prepareValueData(
-        Constants.populationDensity,
-        rawWorldPopData,
-        resolution,
-        "populationDensity",
-        Constants.blueSpectrum,
-        Constants.thresholdDivisions
-      );
-
-      heatMapDataToDisplay = treeHeatMapData.concat(pdHeatMapData);
-      thresholdsWithColor = treeThresholds.concat(pdThresholds);
-      break;
-    default:
-      heatMapDataToDisplay = [];
-      thresholdsWithColor = [];
+  for (const dataSetSelection of dataSetSelections) {
+    switch (dataSetSelection) {
+      case Constants.tree:
+        const preparedTData = preparePointData(
+          dataSetSelection,
+          rawTreeData,
+          resolution,
+          Constants.greenSpectrum,
+          Constants.thresholdDivisions
+        );
+        heatMapData.push(...preparedTData.heatMapDataToDisplay);
+        thresholds.push(...preparedTData.thresholdsWithColor);
+        break;
+      case Constants.hdb:
+        const preparedHData = prepareValueData(
+          dataSetSelection,
+          rawHDBData,
+          resolution,
+          "maxFloor",
+          Constants.orangeSpectrum,
+          Constants.thresholdDivisions
+        );
+        heatMapData.push(...preparedHData.heatMapDataToDisplay);
+        thresholds.push(...preparedHData.thresholdsWithColor);
+        break;
+      case Constants.populationDensity:
+        const preparedPDData = prepareValueData(
+          dataSetSelection,
+          rawWorldPopData,
+          resolution,
+          "populationDensity",
+          Constants.blueSpectrum,
+          Constants.thresholdDivisions
+        );
+        heatMapData.push(...preparedPDData.heatMapDataToDisplay);
+        thresholds.push(...preparedPDData.thresholdsWithColor);
+        break;
+      default:
+        heatMapData = [];
+        thresholds = [];
+    }
   }
 
   return (
     <div>
       <div>
         <div >
-          <h1>{`Singapore ${dataSetSelection} Heatmap`}</h1>
+          <h1>{`Singapore ${dataSetSelections.join(', ')} Heatmap`}</h1>
         </div>
         <div>
-          <button onClick={()=>setDataSetSelection(Constants.tree)}>{Constants.tree}</button>
-          <button onClick={()=>setDataSetSelection(Constants.hdb)}>{Constants.hdb}</button>
-          <button onClick={()=>setDataSetSelection(Constants.populationDensity)}>{Constants.populationDensity}</button>
-          <button onClick={()=>setDataSetSelection(Constants.insights)}>{Constants.insights}</button>
+          <label>
+            <input 
+              type="checkbox"
+              name={Constants.tree}
+              checked={dataSetSelections.includes(Constants.tree)}
+              onChange={treeCheckButtonHandler}/> {Constants.tree}
+          </label>
+          <label>
+            <input 
+              type="checkbox"
+              name={Constants.hdb}
+              checked={dataSetSelections.includes(Constants.hdb)}
+              onChange={hdbCheckButtonHandler}/> {Constants.hdb}
+          </label>
+          <label>
+            <input 
+              type="checkbox"
+              name={Constants.populationDensity}
+              checked={dataSetSelections.includes(Constants.populationDensity)}
+              onChange={pdCheckButtonHandler}/> {Constants.populationDensity}
+          </label>
+          <button onClick={()=>setDataSetSelections(Constants.insights)}>{Constants.insights}</button>
           </div>
         </div>
 
       <Heatmap
-        heatmapData={heatMapDataToDisplay}
-        thresholdsWithColor={thresholdsWithColor}
+        heatMapData={heatMapData}
+        thresholdsWithColor={thresholds}
         changeResolutionWhenZoom={changeResolutionWhenZoom}
-        dataSetSelection={dataSetSelection}
+        dataSetSelections={dataSetSelections}
        />
     </div>
   );

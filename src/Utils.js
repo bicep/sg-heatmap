@@ -78,6 +78,23 @@ export const aggregatePointData = (data, resolution) => {
    }));
  };
 
+ export const checkButtonHandler = (e, dataSetString, dataSetSelections, setDataSetSelections) => {
+  if (e.target.checked) {
+    // add tree data
+    setDataSetSelections(dataSetSelections.concat(dataSetString));
+  }
+  else {
+    // remove tree data
+    let updatedDataSetSelections = []
+    for (const ds of dataSetSelections) {
+      if (ds !== dataSetString) {
+        updatedDataSetSelections.push(ds);
+      }
+    }
+    setDataSetSelections(updatedDataSetSelections);
+  }
+ }
+
  export const calculateDivisions = (dataObject, divisions=5) => {
   // Extract the values from the object
   const values = dataObject.map(data=>data.count)

@@ -13,7 +13,7 @@ const ZoomEventHandlers = ({ handleZoomEnd }) => {
 };
 
 
-const Heatmap = ({ heatmapData, thresholdsWithColor, changeResolutionWhenZoom }) => {
+const Heatmap = ({ heatMapData, thresholdsWithColor, changeResolutionWhenZoom }) => {
   const [map, setMap] = useState(null);
 
   const handleZoomEnd = (e) => {
@@ -33,7 +33,7 @@ const Heatmap = ({ heatmapData, thresholdsWithColor, changeResolutionWhenZoom })
       />
       <Legend map={map} thresholdsWithColor={thresholdsWithColor}/>
       <ZoomEventHandlers handleZoomEnd={handleZoomEnd} />
-      {heatmapData.map(({ h3Index, count, color }) => {
+      {heatMapData.map(({ h3Index, count, color }) => {
         const boundaries = cellToBoundary(h3Index);
         return (
           <Polygon 

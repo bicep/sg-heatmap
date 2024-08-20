@@ -1,5 +1,5 @@
-const hdb = "HDB";
-const tree = "Tree Count Data";
+const hdb = "HDB Floor Count";
+const tree = "Tree Count";
 const populationDensity = "Population Density";
 const insights = "Insights";
 
