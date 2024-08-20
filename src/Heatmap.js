@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { MapContainer, TileLayer, useMapEvent, Polygon } from 'react-leaflet';
 import { cellToBoundary } from 'h3-js';
 import "leaflet/dist/leaflet.css";
+import "./Heatmap.css";
 import Legend from './Legend';
 import { Constants } from './Constants';
 import { getColorForCountWithThreshold } from './Utils';
@@ -58,7 +59,8 @@ const Heatmap = ({ heatmapData, thresholds, changeResolutionWhenZoom, dataSetSel
           positions={boundaries}
           pathOptions={{  
             color: color,
-            fillOpacity: 0.7
+            fillOpacity: 0.7,
+            className: "h3Polygon"
           }} />
         );
       })}
