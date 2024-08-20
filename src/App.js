@@ -46,8 +46,7 @@ const App = () => {
     checkButtonHandler(e, Constants.populationDensity, dataSetSelections, setDataSetSelections)
   }
 
-    // main logic: data prep based on the data that is selected
-  
+  // main logic: data prep based on the data that is selected
   let heatMapData = [];
   let thresholds = [];
   

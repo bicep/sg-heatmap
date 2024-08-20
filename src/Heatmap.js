@@ -4,7 +4,6 @@ import { cellToBoundary } from 'h3-js';
 import "leaflet/dist/leaflet.css";
 import "./Heatmap.css";
 import Legend from './Legend';
-import { Constants } from './Constants';
 
 
 const ZoomEventHandlers = ({ handleZoomEnd }) => {
