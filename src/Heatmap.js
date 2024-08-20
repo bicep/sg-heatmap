@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import { MapContainer, TileLayer, useMapEvent, Polygon } from 'react-leaflet';
-import { cellToBoundary } from 'h3-js';
+import { MapContainer, TileLayer, useMapEvent, Polygon, Popup } from 'react-leaflet';
+import { cellToBoundary, boundaryToCell } from 'h3-js';
 import "leaflet/dist/leaflet.css";
 import "./Heatmap.css";
 import Legend from './Legend';
@@ -14,6 +14,7 @@ const ZoomEventHandlers = ({ handleZoomEnd }) => {
 
 const Heatmap = ({ heatMapData, thresholdsWithColor, changeResolutionWhenZoom }) => {
   const [map, setMap] = useState(null);
+  const [popupInfo, setPopupInfo] = useState(null);
 
   const handleZoomEnd = (e) => {
     // console.log('Map zoom level:', e.target.getZoom());
@@ -22,6 +23,29 @@ const Heatmap = ({ heatMapData, thresholdsWithColor, changeResolutionWhenZoom })
     //   resolution = 9;
     // }
     changeResolutionWhenZoom(resolution)
+  };
+
+  const handleMouseOver = (e, h3Index, count) => {
+    const layer = e.target;
+    layer.setStyle({
+      fillOpacity: 1,
+    });
+
+    const center = layer.getBounds().getCenter();
+    setPopupInfo({
+      position: center,
+      h3Index: h3Index,
+      count: count,
+    });
+  };
+
+  const handleMouseOut = (e) => {
+    const layer = e.target;
+    layer.setStyle({
+      fillOpacity: 0.7,
+    });
+
+    setPopupInfo(null);
   };
 
   return (
@@ -42,9 +66,23 @@ const Heatmap = ({ heatMapData, thresholdsWithColor, changeResolutionWhenZoom })
             color: color,
             fillOpacity: 0.7,
             className: "h3Polygon"
-          }} />
+          }}
+          eventHandlers={{
+            mouseover: (e) => handleMouseOver(e, h3Index, count),
+            mouseout: handleMouseOut,
+          }}
+          />
         );
       })}
+      {popupInfo && (
+      <Popup position={popupInfo.position} autoPan={false}>
+        <div>
+          <strong>Position:</strong> {`${popupInfo.position}`} <br />
+          <strong>H3 Index:</strong> {popupInfo.h3Index} <br />
+          <strong>Count:</strong> {popupInfo.count}
+        </div>
+      </Popup>
+    )}
     </MapContainer>
   );
 };
