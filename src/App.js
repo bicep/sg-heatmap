@@ -36,16 +36,6 @@ const App = () => {
   const changeResolutionWhenZoom = (newResolution) => {
     setResolution(newResolution);
   };
-
-  const t = () => {
-    setDataSetSelection(Constants.tree)
-  }
-  const h = () => {
-    setDataSetSelection(Constants.hdb)
-  }
-  const w = () => {
-    setDataSetSelection(Constants.populationDensity)
-  }
   
   let heatMapDataToDisplay;
   // check if tree of hdb data
@@ -72,9 +62,9 @@ const App = () => {
           <h1>{`Singapore ${dataSetSelection} Heatmap`}</h1>
         </div>
         <div>
-          <button onClick={t}>{Constants.tree}</button>
-          <button onClick={h}>{Constants.hdb}</button>
-          <button onClick={w}>{Constants.populationDensity}</button>
+          <button onClick={()=>setDataSetSelection(Constants.tree)}>{Constants.tree}</button>
+          <button onClick={()=>setDataSetSelection(Constants.hdb)}>{Constants.hdb}</button>
+          <button onClick={()=>setDataSetSelection(Constants.populationDensity)}>{Constants.populationDensity}</button>
           </div>
         </div>
 
