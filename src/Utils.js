@@ -4,8 +4,10 @@ export const preparePointData = (dataSetSelection, rawData, resolution, colorSpe
       let heatMapDataToDisplay = aggregatePointData(rawData, resolution);
       const thresholds = calculateDivisions(heatMapDataToDisplay, thresholdDivisions);
       heatMapDataToDisplay = assignColorAndNameToDataSet(heatMapDataToDisplay, thresholds, colorSpectrum, dataSetSelection);
+      const normalizedData = normalizeData(heatMapDataToDisplay);
       return {
         heatMapDataToDisplay,
+        normalizedData,
         thresholdsWithColor: {
           name: dataSetSelection,
           thresholds,
@@ -18,8 +20,10 @@ export const prepareValueData = (dataSetSelection, rawData, resolution, valueCol
   let heatMapDataToDisplay = aggregateValueData(rawData, resolution, valueColumnName);
   const thresholds = calculateDivisions(heatMapDataToDisplay, thresholdDivisions);
   heatMapDataToDisplay = assignColorAndNameToDataSet(heatMapDataToDisplay, thresholds, colorSpectrum, dataSetSelection);
+  const normalizedData = normalizeData(heatMapDataToDisplay);
   return {
     heatMapDataToDisplay,
+    normalizedData,
     thresholdsWithColor: {
       name: dataSetSelection,
       thresholds,

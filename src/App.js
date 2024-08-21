@@ -5,7 +5,6 @@ import {
   preparePointData,
   prepareValueData,
   checkButtonHandler,
-  normalizeData
 } from './Utils';
 import { Constants } from './Constants';
 
@@ -67,8 +66,8 @@ const App = () => {
           Constants.greenSpectrum,
           Constants.thresholdDivisions
         );
-        normalizedHeatMapData.push(...normalizeData(preparedTData.heatMapDataToDisplay));
         heatMapData.push(...preparedTData.heatMapDataToDisplay);
+        normalizedHeatMapData.push(...preparedTData.normalizedData);
         thresholds.push(preparedTData.thresholdsWithColor);
         break;
       case Constants.hdb:
@@ -81,10 +80,11 @@ const App = () => {
           Constants.thresholdDivisions
         );
         heatMapData.push(...preparedHData.heatMapDataToDisplay);
+        normalizedHeatMapData.push(...preparedHData.normalizedData);
         thresholds.push(preparedHData.thresholdsWithColor);
         break;
       case Constants.populationDensity:
-        const preparedPDData = prepareValueData(
+        const preparePDData = prepareValueData(
           dataSetSelection,
           rawWorldPopData,
           resolution,
@@ -92,8 +92,9 @@ const App = () => {
           Constants.blueSpectrum,
           Constants.thresholdDivisions
         );
-        heatMapData.push(...preparedPDData.heatMapDataToDisplay);
-        thresholds.push(preparedPDData.thresholdsWithColor);
+        heatMapData.push(...preparePDData.heatMapDataToDisplay);
+        normalizedHeatMapData.push(...preparePDData.normalizedData);
+        thresholds.push(preparePDData.thresholdsWithColor);
         break;
       default:
         heatMapData = [];
