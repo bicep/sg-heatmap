@@ -9,7 +9,7 @@ import {
 import { Constants } from './Constants';
 
 const App = () => {
-  const [dataSetSelections, setDataSetSelections] = useState([Constants.tree]);
+  const [dataSetSelections, setDataSetSelections] = useState([Constants.tree, Constants.hdb]);
   const [rawTreeData, setRawTreeData] = useState([]);
   const [rawHDBData, setRawHDBData] = useState([]);
   const [rawWorldPopData, setRawWorldPopData] = useState([]);
@@ -53,7 +53,6 @@ const App = () => {
 
   // main logic: data prep based on the data that is selected
   let heatMapData = new Map();
-  let normalizedHeatMapData = new Map();
   let thresholds = new Map();
   
   for (const dataSetSelection of dataSetSelections) {
@@ -125,7 +124,7 @@ const App = () => {
               checked={dataSetSelections.includes(Constants.populationDensity)}
               onChange={pdCheckButtonHandler}/> {Constants.populationDensity}
           </label>
-          <button onClick={()=>setDataSetSelections(Constants.insights)}>{Constants.insights}</button>
+          {/* <button onClick={()=>setDataSetSelections(Constants.insights)}>{Constants.insights}</button> */}
           </div>
         </div>
 

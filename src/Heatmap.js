@@ -112,7 +112,7 @@ const Heatmap = ({ heatMapData, thresholdsWithColor, changeResolutionWhenZoom })
           </div>
       </Popup>
       )}
-      {/* <Insights map={map} /> */}
+      <Insights map={map} heatMapData={heatMapData} />
     </MapContainer>
   );
 };

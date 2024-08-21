@@ -1,4 +1,5 @@
 import { latLngToCell } from 'h3-js';
+import { Constants } from './Constants';
 
 export const preparePointData = (dataSetSelection, rawData, resolution, colorSpectrum, thresholdDivisions) => {
       let heatMapDataToDisplay = aggregatePointData(rawData, resolution);
@@ -45,7 +46,7 @@ export const aggregatePointData = (data, resolution) => {
 
    return Object.keys(h3Map).map(h3Index => ({
      h3Index,
-     count: h3Map[h3Index]
+     count: Math.round(h3Map[h3Index]  * 100) / 100
    }));
  };
 
@@ -77,7 +78,7 @@ export const aggregatePointData = (data, resolution) => {
 
    return Object.keys(h3Map).map(h3Index => ({
      h3Index,
-     count: h3Map[h3Index]
+     count: Math.round(h3Map[h3Index]  * 100) / 100
    }));
  };
 
@@ -142,7 +143,7 @@ export const addNormalizationAndColorToDataSet = (heatmapData, normalizeData, th
   return heatmapData.map(({ h3Index, count }, index) => ({
     h3Index,
     count,
-    normalizedCount: normalizeData[index].normalizedCount,
+    normalizedCount: Math.round(normalizeData[index].normalizedCount * 100) / 100,
     color: getColorForCountWithThreshold(thresholds, count, colorSpectrum),
     name: dataSetSelection,
   }));
@@ -178,48 +179,108 @@ export const normalizeData = (heatMapDataSet) => {
   });
 };
 
-// const processHeatMapData = (heatMapData) => {
+export const processHeatMapData = (heatMapData) => {
+  if (heatMapData.size < 2 || heatMapData.size >2 || heatMapData.values().next().value.length === 0) {
+    return []
+  }
 
-//   // for dataset separate and normalize the data
-
-
-//   // return a dictionary with h3Index as key and array as values to find overlap
-//   const heatMapDataDictionary = new Map()
+  // if (heatMapData.length === 1) {
+  //   let highest= 0;
+  //   let highestHex= "";
+  //   let lowest= Infinity;
+  //   let lowestHex= "";
   
-//   heatMapData.forEach(data => {
-//     if (heatMapDataDictionary[data.h3Index]) {
-//       heatMapDataDictionary[data.h3Index] = heatMapDataDictionary[data.h3Index].concat(data);
-//     } else {
-//       heatMapDataDictionary[data.h3Index] = [data];
-//     }
-//   });
+  //   heatMapData.forEach(data => {
+  //     if (data.count > highest) {
+  //       highest = data.count;
+  //       highestHex = data.h3Index;
+  //     }
+  //     if (data.count < lowest) {
+  //       lowest = data.count;
+  //       lowestHex = data.h3Index;
+  //     }
+  //   });
+  //   return [
+  //     {
+  //       name: "Highest Normalized Value",
+  //       value: highest,
+  //       h3Index: highestHex,
+  //       dataSet1: heatMapDataDictionary.get(highestHex)[0],
+  //       dataSet2: heatMapDataDictionary.get(highestHex)[1],
+  //     },
+  //     {
+  //       name: "Lowest Normalized Value",
+  //       value: lowest,
+  //       h3Index: lowestHex,
+  //       dataSet1: heatMapDataDictionary.get(lowestHex)[0],
+  //       dataSet2: heatMapDataDictionary.get(lowestHex)[1],
+  //     },
+  //   ]
+  // }
 
-//   heatMapDataDictionary.forEach((value, key, map) => {
-//     // there is overlap
-//     if (value.len > 1) {
-//       const insights = value.map((hexagon) => {
-//         normalizeData(dataSet1.map(d => d.count))[index];
-//       })
-//     }
-//   })
+  // 2 or more datasets
+  // return a dictionary with h3Index as key and array as values to find overlap
+  const heatMapDataDictionary = new Map();
+  
+  // dictionary traversal
+  heatMapData.forEach((value) => {
+    // dictionary traversal
+    value.forEach((data)=>{
+      if (heatMapDataDictionary.has(data.h3Index)) {
+        heatMapDataDictionary.set(data.h3Index, heatMapDataDictionary.get(data.h3Index).concat(data));
+      } else {
+        heatMapDataDictionary.set(data.h3Index, [data]);
+      }
+    });
+  });
 
-//   return dataSet1.map(({ h3Index, count: count1 }, index) => {
-//     const count2 = dataSet2[index].count;
-    
-//     const normalizedCount1 = normalizeData(dataSet1.map(d => d.count))[index];
-//     const normalizedCount2 = normalizeData(dataSet2.map(d => d.count))[index];
-    
-//     const combinedValue = normalizedCount1 + normalizedCount2;
-//     const difference = Math.abs(normalizedCount1 - normalizedCount2);
-
-//     return {
-//       h3Index,
-//       count1,
-//       count2,
-//       combinedValue,
-//       difference,
-//       name1: dataSet1[index].name,
-//       name2: dataSet2[index].name,
-//     };
-//   });
-// };
+  let highest= 0;
+  let highestHex= "";
+  let lowest= Infinity;
+  let lowestHex= "";
+  let difference = 0;
+  let differenceHex= "";
+  heatMapDataDictionary.forEach((value, key) => {
+    // there is overlap between 2 datasets
+    if (value.length > 1) {
+      // keeping it to 2 datasets for now, if >3 datasets it will just take the first two
+      const insightSum = value[0].normalizedCount + value[1].normalizedCount;
+      const insightDifference = Math.abs(value[0].normalizedCount - value[1].normalizedCount);
+      if (insightSum > highest) {
+        highest = insightSum;
+        highestHex = key;
+      }
+      if (insightSum < lowest) {
+        lowest = insightSum;
+        lowestHex = key;
+      }
+      if (insightDifference > difference) {
+        difference = insightDifference;
+        differenceHex = key;
+      }
+    }
+  })
+  return [
+    {
+      name: "Highest Normalized Sum",
+      value: highest,
+      h3Index: highestHex,
+      hexagon1: heatMapDataDictionary.get(highestHex)[0],
+      hexagon2: heatMapDataDictionary.get(highestHex)[1],
+    },
+    {
+      name: "Lowest Normalized Sum",
+      value: lowest,
+      h3Index: lowestHex,
+      hexagon1: heatMapDataDictionary.get(lowestHex)[0],
+      hexagon2: heatMapDataDictionary.get(lowestHex)[1],
+    },
+    {
+      name: "Highest Normalized Difference",
+      value: difference,
+      h3Index: differenceHex,
+      hexagon1: heatMapDataDictionary.get(differenceHex)[0],
+      hexagon2: heatMapDataDictionary.get(differenceHex)[1],
+    },
+  ]
+}
