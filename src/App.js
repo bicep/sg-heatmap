@@ -67,7 +67,6 @@ const App = () => {
           Constants.thresholdDivisions
         );
         heatMapData.set(Constants.tree, preparedTData.heatMapDataToDisplay);
-        normalizedHeatMapData.set(Constants.tree, preparedTData.normalizedData);
         thresholds.set(Constants.tree, preparedTData.thresholdsWithColor);
         break;
       case Constants.hdb:
@@ -80,7 +79,6 @@ const App = () => {
           Constants.thresholdDivisions
         );
         heatMapData.set(Constants.hdb, preparedHData.heatMapDataToDisplay);
-        normalizedHeatMapData.set(Constants.hdb, preparedHData.normalizedData);
         thresholds.set(Constants.hdb, preparedHData.thresholdsWithColor);
         break;
       case Constants.populationDensity:
@@ -93,7 +91,6 @@ const App = () => {
           Constants.thresholdDivisions
         );
         heatMapData.set(Constants.populationDensity, preparePDData.heatMapDataToDisplay);
-        normalizedHeatMapData.set(Constants.populationDensity, preparePDData.normalizedData);
         thresholds.set(Constants.populationDensity, preparePDData.thresholdsWithColor);
         break;
       default:

@@ -45,9 +45,10 @@ const Heatmap = ({ heatMapData, thresholdsWithColor, changeResolutionWhenZoom })
       return polygonBounds.contains(center);
     });
 
-    const aggregatedInfo = intersectingPolygons.map(({ h3Index, count, name }) => ({
+    const aggregatedInfo = intersectingPolygons.map(({ h3Index, count, normalizedCount, name }) => ({
       h3Index,
       count,
+      normalizedCount,
       name
     }));
 
@@ -99,11 +100,12 @@ const Heatmap = ({ heatMapData, thresholdsWithColor, changeResolutionWhenZoom })
           <div>
             <strong>Hexagon Information:</strong>
             <ul>
-              {popupInfo.info.map(({ h3Index, count, name }) => (
+              {popupInfo.info.map(({ h3Index, count, normalizedCount, name }) => (
                 <li key={h3Index.concat(name)}>
                   <strong>Dataset:</strong> {name} <br />
                   <strong>H3 Index:</strong> {h3Index} <br />
-                  <strong>Count:</strong> {count} <br /><br />
+                  <strong>Count:</strong> {count} <br />
+                  <strong>Normalized Count:</strong> {Math.round((normalizedCount*100))} Percentile <br /><br />
                 </li>
               ))}
             </ul>

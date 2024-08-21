@@ -3,11 +3,10 @@ import { latLngToCell } from 'h3-js';
 export const preparePointData = (dataSetSelection, rawData, resolution, colorSpectrum, thresholdDivisions) => {
       let heatMapDataToDisplay = aggregatePointData(rawData, resolution);
       const thresholds = calculateDivisions(heatMapDataToDisplay, thresholdDivisions);
-      heatMapDataToDisplay = assignColorAndNameToDataSet(heatMapDataToDisplay, thresholds, colorSpectrum, dataSetSelection);
       const normalizedData = normalizeData(heatMapDataToDisplay);
+      heatMapDataToDisplay = addNormalizationAndColorToDataSet(heatMapDataToDisplay, normalizedData, thresholds, colorSpectrum, dataSetSelection);
       return {
         heatMapDataToDisplay,
-        normalizedData,
         thresholdsWithColor: {
           name: dataSetSelection,
           thresholds,
@@ -19,8 +18,8 @@ export const preparePointData = (dataSetSelection, rawData, resolution, colorSpe
 export const prepareValueData = (dataSetSelection, rawData, resolution, valueColumnName, colorSpectrum, thresholdDivisions) => {
   let heatMapDataToDisplay = aggregateValueData(rawData, resolution, valueColumnName);
   const thresholds = calculateDivisions(heatMapDataToDisplay, thresholdDivisions);
-  heatMapDataToDisplay = assignColorAndNameToDataSet(heatMapDataToDisplay, thresholds, colorSpectrum, dataSetSelection);
   const normalizedData = normalizeData(heatMapDataToDisplay);
+  heatMapDataToDisplay = addNormalizationAndColorToDataSet(heatMapDataToDisplay, normalizedData, thresholds, colorSpectrum, dataSetSelection);
   return {
     heatMapDataToDisplay,
     normalizedData,
@@ -99,28 +98,51 @@ export const aggregatePointData = (data, resolution) => {
   }
  }
 
- export const calculateDivisions = (dataObject, divisions=5) => {
+//  export const calculateDivisions = (dataObject, divisions=5) => {
+//   // Extract the values from the object
+//   const values = dataObject.map(data=>data.count)
+
+//   // Sort the values in ascending order
+//   values.sort((a, b) => a - b);
+
+//   // Calculate the thresholds for each division
+//   const thresholds = [];
+//   thresholds.push(0);
+//   for (let i = 1; i < (divisions-1); i++) {
+//     const index = Math.floor((i / divisions) * values.length);
+//     thresholds.push(values[index]);
+//   }
+
+//   return thresholds;
+// };
+
+export const calculateDivisions = (dataObject, divisions = 5) => {
   // Extract the values from the object
-  const values = dataObject.map(data=>data.count)
+  const values = dataObject.map(data => data.count);
 
-  // Sort the values in ascending order
-  values.sort((a, b) => a - b);
+  // Calculate the mean and standard deviation
+  const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
+  const stdDev = Math.sqrt(values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length);
 
-  // Calculate the thresholds for each division
+  // Calculate thresholds based on the normal distribution
   const thresholds = [];
-  thresholds.push(0);
-  for (let i = 1; i < (divisions-1); i++) {
-    const index = Math.floor((i / divisions) * values.length);
-    thresholds.push(values[index]);
+
+  // You can adjust the z-values for more or fewer divisions
+  const zValues = [-2, -1, 0, 1, 2]; // For 5 divisions, corresponding to standard deviations
+  for (let i = 0; i < divisions - 1; i++) {
+    const realValue = (mean + zValues[i] * stdDev);
+    thresholds.push((realValue>0)?realValue:0);
   }
 
   return thresholds;
 };
 
-export const assignColorAndNameToDataSet = (heatmapData, thresholds, colorSpectrum, dataSetSelection) => {
-  return heatmapData.map(({ h3Index, count }) => ({
+// color, name and normalization to dataset
+export const addNormalizationAndColorToDataSet = (heatmapData, normalizeData, thresholds, colorSpectrum, dataSetSelection) => {
+  return heatmapData.map(({ h3Index, count }, index) => ({
     h3Index,
     count,
+    normalizedCount: normalizeData[index].normalizedCount,
     color: getColorForCountWithThreshold(thresholds, count, colorSpectrum),
     name: dataSetSelection,
   }));
@@ -147,13 +169,11 @@ export const normalizeData = (heatMapDataSet) => {
   const counts = heatMapDataSet.map(data=>data.count);
   const max = Math.max(...counts);
   const min = Math.min(...counts);
-  return heatMapDataSet.map(({ h3Index, color, count, name }) => {
-    const normalizedValue = (count - min) / (max - min);
+  return heatMapDataSet.map(({ h3Index, count }) => {
+    const normalizedCount = (count - min) / (max - min);
     return {
-      normalizedValue,
-      name,
+      normalizedCount,
       h3Index,
-      color
     }
   });
 };
