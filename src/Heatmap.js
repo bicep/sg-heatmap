@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { MapContainer, TileLayer, useMapEvent, Polygon, Popup } from 'react-leaflet';
-import { cellToBoundary, boundaryToCell } from 'h3-js';
+import { cellToBoundary } from 'h3-js';
 import "leaflet/dist/leaflet.css";
 import "./Heatmap.css";
 import Legend from './Legend';
