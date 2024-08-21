@@ -2,3 +2,6 @@
   mix-blend-mode: overlay; /* Apply overlay blending mode */
 }
 
+body {
+  background-color: aqua;
+}
