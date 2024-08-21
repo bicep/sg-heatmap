@@ -136,3 +136,66 @@ export const randomSample = (data, sampleSize) => {
   const indices = Array.from({ length: sampleSize }, (_, i) => Math.floor(Math.random() * totalRows));
   return indices.map(index => data[index]);
 }
+
+// for insights component
+
+export const normalizeData = (heatMapDataSet) => {
+  const counts = heatMapDataSet.map(data=>data.count);
+  const max = Math.max(...counts);
+  const min = Math.min(...counts);
+  return heatMapDataSet.map(({ h3Index, color, count, name }) => {
+    const normalizedValue = (count - min) / (max - min);
+    return {
+      normalizedValue,
+      name,
+      h3Index,
+      color
+    }
+  });
+};
+
+// const processHeatMapData = (heatMapData) => {
+
+//   // for dataset separate and normalize the data
+
+
+//   // return a dictionary with h3Index as key and array as values to find overlap
+//   const heatMapDataDictionary = new Map()
+  
+//   heatMapData.forEach(data => {
+//     if (heatMapDataDictionary[data.h3Index]) {
+//       heatMapDataDictionary[data.h3Index] = heatMapDataDictionary[data.h3Index].concat(data);
+//     } else {
+//       heatMapDataDictionary[data.h3Index] = [data];
+//     }
+//   });
+
+//   heatMapDataDictionary.forEach((value, key, map) => {
+//     // there is overlap
+//     if (value.len > 1) {
+//       const insights = value.map((hexagon) => {
+//         normalizeData(dataSet1.map(d => d.count))[index];
+//       })
+//     }
+//   })
+
+//   return dataSet1.map(({ h3Index, count: count1 }, index) => {
+//     const count2 = dataSet2[index].count;
+    
+//     const normalizedCount1 = normalizeData(dataSet1.map(d => d.count))[index];
+//     const normalizedCount2 = normalizeData(dataSet2.map(d => d.count))[index];
+    
+//     const combinedValue = normalizedCount1 + normalizedCount2;
+//     const difference = Math.abs(normalizedCount1 - normalizedCount2);
+
+//     return {
+//       h3Index,
+//       count1,
+//       count2,
+//       combinedValue,
+//       difference,
+//       name1: dataSet1[index].name,
+//       name2: dataSet2[index].name,
+//     };
+//   });
+// };

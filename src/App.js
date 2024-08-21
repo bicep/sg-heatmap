@@ -1,6 +1,12 @@
 import React, { useEffect, useState} from 'react';
 import Heatmap from './Heatmap';
-import { randomSample, preparePointData, prepareValueData, checkButtonHandler} from './Utils';
+import {
+  randomSample,
+  preparePointData,
+  prepareValueData,
+  checkButtonHandler,
+  normalizeData
+} from './Utils';
 import { Constants } from './Constants';
 
 const App = () => {
@@ -48,6 +54,7 @@ const App = () => {
 
   // main logic: data prep based on the data that is selected
   let heatMapData = [];
+  let normalizedHeatMapData = [];
   let thresholds = [];
   
   for (const dataSetSelection of dataSetSelections) {
@@ -60,6 +67,7 @@ const App = () => {
           Constants.greenSpectrum,
           Constants.thresholdDivisions
         );
+        normalizedHeatMapData.push(...normalizeData(preparedTData.heatMapDataToDisplay));
         heatMapData.push(...preparedTData.heatMapDataToDisplay);
         thresholds.push(preparedTData.thresholdsWithColor);
         break;
