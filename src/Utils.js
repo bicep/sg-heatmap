@@ -6,11 +6,11 @@ export const preparePointData = (dataSetSelection, rawData, resolution, colorSpe
       heatMapDataToDisplay = assignColorAndNameToDataSet(heatMapDataToDisplay, thresholds, colorSpectrum, dataSetSelection);
       return {
         heatMapDataToDisplay,
-        thresholdsWithColor: [{
+        thresholdsWithColor: {
           name: dataSetSelection,
           thresholds,
           colorSpectrum,
-        }]
+        }
       }
 }
 
@@ -20,11 +20,11 @@ export const prepareValueData = (dataSetSelection, rawData, resolution, valueCol
   heatMapDataToDisplay = assignColorAndNameToDataSet(heatMapDataToDisplay, thresholds, colorSpectrum, dataSetSelection);
   return {
     heatMapDataToDisplay,
-    thresholdsWithColor: [{
+    thresholdsWithColor: {
       name: dataSetSelection,
       thresholds,
       colorSpectrum,
-    }]
+    }
   }
 }
 

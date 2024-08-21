@@ -61,7 +61,7 @@ const App = () => {
           Constants.thresholdDivisions
         );
         heatMapData.push(...preparedTData.heatMapDataToDisplay);
-        thresholds.push(...preparedTData.thresholdsWithColor);
+        thresholds.push(preparedTData.thresholdsWithColor);
         break;
       case Constants.hdb:
         const preparedHData = prepareValueData(
@@ -73,7 +73,7 @@ const App = () => {
           Constants.thresholdDivisions
         );
         heatMapData.push(...preparedHData.heatMapDataToDisplay);
-        thresholds.push(...preparedHData.thresholdsWithColor);
+        thresholds.push(preparedHData.thresholdsWithColor);
         break;
       case Constants.populationDensity:
         const preparedPDData = prepareValueData(
@@ -85,7 +85,7 @@ const App = () => {
           Constants.thresholdDivisions
         );
         heatMapData.push(...preparedPDData.heatMapDataToDisplay);
-        thresholds.push(...preparedPDData.thresholdsWithColor);
+        thresholds.push(preparedPDData.thresholdsWithColor);
         break;
       default:
         heatMapData = [];
