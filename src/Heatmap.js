@@ -33,9 +33,13 @@ const Heatmap = ({ heatMapData, thresholdsWithColor, changeResolutionWhenZoom })
     });
 
     const center = layer.getBounds().getCenter();
+    // we just need the values from the dictionary
+    const valuesHeatMapData = Array.from(heatMapData.values());
+    // we need to flatten 2d to 1d array
+    const flattenedHeatMapData = [].concat(...valuesHeatMapData);
 
     // Find all polygons that intersect with the current polygon
-    const intersectingPolygons = heatMapData.filter(({ h3Index }) => {
+    const intersectingPolygons = flattenedHeatMapData.filter(({ h3Index }) => {
       const boundaries = cellToBoundary(h3Index);
       const polygonBounds = L.polygon(boundaries).getBounds();
       return polygonBounds.contains(center);
@@ -70,24 +74,26 @@ const Heatmap = ({ heatMapData, thresholdsWithColor, changeResolutionWhenZoom })
       />
       <Legend map={map} thresholdsWithColor={thresholdsWithColor}/>
       <ZoomEventHandlers handleZoomEnd={handleZoomEnd} />
-      {heatMapData.map(({ h3Index, count, color, name }) => {
-        const boundaries = cellToBoundary(h3Index);
-        return (
-          <Polygon 
-          key={h3Index.concat(color)}
-          positions={boundaries}
-          pathOptions={{  
-            color: color,
-            fillOpacity: 0.7,
-          }}
-          className="h3Polygon"
-          eventHandlers={{
-            mouseover: (e) => handleMouseOver(e, h3Index, count, name),
-            mouseout: handleMouseOut,
-          }}
-          />
-        );
-      })}
+      {[...heatMapData.keys()].map(dataSetName => {
+          return heatMapData.get(dataSetName).map(({ h3Index, count, color, name }) => {
+              const boundaries = cellToBoundary(h3Index);
+              return (
+                <Polygon 
+                key={h3Index.concat(color)}
+                positions={boundaries}
+                pathOptions={{  
+                  color: color,
+                  fillOpacity: 0.7,
+                }}
+                className="h3Polygon"
+                eventHandlers={{
+                  mouseover: (e) => handleMouseOver(e, h3Index, count, name),
+                  mouseout: handleMouseOut,
+                }}
+                />
+              );
+          })
+      })};
       {popupInfo && (
       <Popup position={popupInfo.position} autoPan={false}>
           <div>

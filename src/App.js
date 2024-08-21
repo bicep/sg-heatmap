@@ -52,9 +52,9 @@ const App = () => {
   }
 
   // main logic: data prep based on the data that is selected
-  let heatMapData = [];
-  let normalizedHeatMapData = [];
-  let thresholds = [];
+  let heatMapData = new Map();
+  let normalizedHeatMapData = new Map();
+  let thresholds = new Map();
   
   for (const dataSetSelection of dataSetSelections) {
     switch (dataSetSelection) {
@@ -66,9 +66,9 @@ const App = () => {
           Constants.greenSpectrum,
           Constants.thresholdDivisions
         );
-        heatMapData.push(...preparedTData.heatMapDataToDisplay);
-        normalizedHeatMapData.push(...preparedTData.normalizedData);
-        thresholds.push(preparedTData.thresholdsWithColor);
+        heatMapData.set(Constants.tree, preparedTData.heatMapDataToDisplay);
+        normalizedHeatMapData.set(Constants.tree, preparedTData.normalizedData);
+        thresholds.set(Constants.tree, preparedTData.thresholdsWithColor);
         break;
       case Constants.hdb:
         const preparedHData = prepareValueData(
@@ -79,9 +79,9 @@ const App = () => {
           Constants.orangeSpectrum,
           Constants.thresholdDivisions
         );
-        heatMapData.push(...preparedHData.heatMapDataToDisplay);
-        normalizedHeatMapData.push(...preparedHData.normalizedData);
-        thresholds.push(preparedHData.thresholdsWithColor);
+        heatMapData.set(Constants.hdb, preparedHData.heatMapDataToDisplay);
+        normalizedHeatMapData.set(Constants.hdb, preparedHData.normalizedData);
+        thresholds.set(Constants.hdb, preparedHData.thresholdsWithColor);
         break;
       case Constants.populationDensity:
         const preparePDData = prepareValueData(
@@ -92,13 +92,11 @@ const App = () => {
           Constants.blueSpectrum,
           Constants.thresholdDivisions
         );
-        heatMapData.push(...preparePDData.heatMapDataToDisplay);
-        normalizedHeatMapData.push(...preparePDData.normalizedData);
-        thresholds.push(preparePDData.thresholdsWithColor);
+        heatMapData.set(Constants.populationDensity, preparePDData.heatMapDataToDisplay);
+        normalizedHeatMapData.set(Constants.populationDensity, preparePDData.normalizedData);
+        thresholds.set(Constants.populationDensity, preparePDData.thresholdsWithColor);
         break;
       default:
-        heatMapData = [];
-        thresholds = [];
     }
   }
 
