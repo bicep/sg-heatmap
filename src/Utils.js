@@ -3,7 +3,7 @@ import { latLngToCell } from 'h3-js';
 export const preparePointData = (dataSetSelection, rawData, resolution, colorSpectrum, thresholdDivisions) => {
       let heatMapDataToDisplay = aggregatePointData(rawData, resolution);
       const thresholds = calculateDivisions(heatMapDataToDisplay, thresholdDivisions);
-      heatMapDataToDisplay = assignColorToDataSet(heatMapDataToDisplay, thresholds, colorSpectrum);
+      heatMapDataToDisplay = assignColorAndNameToDataSet(heatMapDataToDisplay, thresholds, colorSpectrum, dataSetSelection);
       return {
         heatMapDataToDisplay,
         thresholdsWithColor: [{
@@ -17,7 +17,7 @@ export const preparePointData = (dataSetSelection, rawData, resolution, colorSpe
 export const prepareValueData = (dataSetSelection, rawData, resolution, valueColumnName, colorSpectrum, thresholdDivisions) => {
   let heatMapDataToDisplay = aggregateValueData(rawData, resolution, valueColumnName);
   const thresholds = calculateDivisions(heatMapDataToDisplay, thresholdDivisions);
-  heatMapDataToDisplay = assignColorToDataSet(heatMapDataToDisplay, thresholds, colorSpectrum);
+  heatMapDataToDisplay = assignColorAndNameToDataSet(heatMapDataToDisplay, thresholds, colorSpectrum, dataSetSelection);
   return {
     heatMapDataToDisplay,
     thresholdsWithColor: [{
@@ -113,11 +113,12 @@ export const aggregatePointData = (data, resolution) => {
   return thresholds;
 };
 
-export const assignColorToDataSet = (heatmapData, thresholds, colorSpectrum) => {
+export const assignColorAndNameToDataSet = (heatmapData, thresholds, colorSpectrum, dataSetSelection) => {
   return heatmapData.map(({ h3Index, count }) => ({
     h3Index,
     count,
-    color: getColorForCountWithThreshold(thresholds, count, colorSpectrum)
+    color: getColorForCountWithThreshold(thresholds, count, colorSpectrum),
+    name: dataSetSelection,
   }));
 };
 

@@ -4,7 +4,7 @@ import { cellToBoundary, boundaryToCell } from 'h3-js';
 import "leaflet/dist/leaflet.css";
 import "./Heatmap.css";
 import Legend from './Legend';
-
+import L from 'leaflet';
 
 const ZoomEventHandlers = ({ handleZoomEnd }) => {
   useMapEvent('zoomend', handleZoomEnd);
@@ -25,19 +25,32 @@ const Heatmap = ({ heatMapData, thresholdsWithColor, changeResolutionWhenZoom })
     changeResolutionWhenZoom(resolution)
   };
 
-  const handleMouseOver = (e, h3Index, count) => {
+  const handleMouseOver = (e, h3Index, count, name) => {
     const layer = e.target;
     layer.setStyle({
       fillOpacity: 1,
     });
 
     const center = layer.getBounds().getCenter();
+
+    // Find all polygons that intersect with the current polygon
+    const intersectingPolygons = heatMapData.filter(({ h3Index }) => {
+      const boundaries = cellToBoundary(h3Index);
+      const polygonBounds = L.polygon(boundaries).getBounds();
+      return polygonBounds.contains(center);
+    });
+
+    const aggregatedInfo = intersectingPolygons.map(({ h3Index, count, name }) => ({
+      h3Index,
+      count,
+      name
+    }));
+
     setPopupInfo({
       position: center,
-      h3Index: h3Index,
-      count: count,
+      info: aggregatedInfo,
     });
-  };
+  }
 
   const handleMouseOut = (e) => {
     const layer = e.target;
@@ -56,7 +69,7 @@ const Heatmap = ({ heatMapData, thresholdsWithColor, changeResolutionWhenZoom })
       />
       <Legend map={map} thresholdsWithColor={thresholdsWithColor}/>
       <ZoomEventHandlers handleZoomEnd={handleZoomEnd} />
-      {heatMapData.map(({ h3Index, count, color }) => {
+      {heatMapData.map(({ h3Index, count, color, name }) => {
         const boundaries = cellToBoundary(h3Index);
         return (
           <Polygon 
@@ -68,7 +81,7 @@ const Heatmap = ({ heatMapData, thresholdsWithColor, changeResolutionWhenZoom })
             className: "h3Polygon"
           }}
           eventHandlers={{
-            mouseover: (e) => handleMouseOver(e, h3Index, count),
+            mouseover: (e) => handleMouseOver(e, h3Index, count, name),
             mouseout: handleMouseOut,
           }}
           />
@@ -76,11 +89,18 @@ const Heatmap = ({ heatMapData, thresholdsWithColor, changeResolutionWhenZoom })
       })}
       {popupInfo && (
       <Popup position={popupInfo.position} autoPan={false}>
-        <div>
-          <strong>Position:</strong> {`${popupInfo.position}`} <br />
-          <strong>H3 Index:</strong> {popupInfo.h3Index} <br />
-          <strong>Count:</strong> {popupInfo.count}
-        </div>
+          <div>
+            <strong>Hexagon Information:</strong>
+            <ul>
+              {popupInfo.info.map(({ h3Index, count, name }) => (
+                <li key={h3Index.concat(name)}>
+                  <strong>Dataset:</strong> {name} <br />
+                  <strong>H3 Index:</strong> {h3Index} <br />
+                  <strong>Count:</strong> {count} <br /><br />
+                </li>
+              ))}
+            </ul>
+          </div>
       </Popup>
     )}
     </MapContainer>
