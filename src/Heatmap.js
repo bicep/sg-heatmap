@@ -78,8 +78,8 @@ const Heatmap = ({ heatMapData, thresholdsWithColor, changeResolutionWhenZoom })
           pathOptions={{  
             color: color,
             fillOpacity: 0.7,
-            className: "h3Polygon"
           }}
+          className="h3Polygon"
           eventHandlers={{
             mouseover: (e) => handleMouseOver(e, h3Index, count, name),
             mouseout: handleMouseOut,
