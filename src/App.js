@@ -13,6 +13,7 @@ const App = () => {
   const [rawTreeData, setRawTreeData] = useState([]);
   const [rawHDBData, setRawHDBData] = useState([]);
   const [rawWorldPopData, setRawWorldPopData] = useState([]);
+  const [insightsActivated, setInsightsActivated] = useState(false);
   const [resolution, setResolution] = useState(8); // Set a default resolution, this can be made dynamic later
 
   useEffect(() => {
@@ -39,16 +40,26 @@ const App = () => {
     setResolution(newResolution);
   };
 
-  const treeCheckButtonHandler = (e) => {
+  const treeCheckBoxHandler = (e) => {
     checkButtonHandler(e, Constants.tree, dataSetSelections, setDataSetSelections)
   }
 
-  const hdbCheckButtonHandler = (e) => {
+  const hdbCheckBoxHandler = (e) => {
     checkButtonHandler(e, Constants.hdb, dataSetSelections, setDataSetSelections)
   }
 
-  const pdCheckButtonHandler = (e) => {
+  const pdCheckBoxHandler = (e) => {
     checkButtonHandler(e, Constants.populationDensity, dataSetSelections, setDataSetSelections)
+  }
+
+  const insightsCheckBoxHandler = (e) => {
+    if (e.target.checked) {
+      // add tree data
+      setInsightsActivated(true);
+    }
+    else {
+      setInsightsActivated(false);
+    }
   }
 
   // main logic: data prep based on the data that is selected
@@ -108,23 +119,29 @@ const App = () => {
               type="checkbox"
               name={Constants.tree}
               checked={dataSetSelections.includes(Constants.tree)}
-              onChange={treeCheckButtonHandler}/> {Constants.tree}
+              onChange={treeCheckBoxHandler}/> {Constants.tree}
           </label>
           <label>
             <input 
               type="checkbox"
               name={Constants.hdb}
               checked={dataSetSelections.includes(Constants.hdb)}
-              onChange={hdbCheckButtonHandler}/> {Constants.hdb}
+              onChange={hdbCheckBoxHandler}/> {Constants.hdb}
           </label>
           <label>
             <input 
               type="checkbox"
               name={Constants.populationDensity}
               checked={dataSetSelections.includes(Constants.populationDensity)}
-              onChange={pdCheckButtonHandler}/> {Constants.populationDensity}
+              onChange={pdCheckBoxHandler}/> {Constants.populationDensity}
           </label>
-          {/* <button onClick={()=>setDataSetSelections(Constants.insights)}>{Constants.insights}</button> */}
+          <label>
+            <input 
+              type="checkbox"
+              name={Constants.insights}
+              checked={insightsActivated}
+              onChange={insightsCheckBoxHandler}/> {Constants.insights}
+          </label>
           </div>
         </div>
 
@@ -133,6 +150,7 @@ const App = () => {
         thresholdsWithColor={thresholds}
         changeResolutionWhenZoom={changeResolutionWhenZoom}
         dataSetSelections={dataSetSelections}
+        insightsActivated={insightsActivated}
        />
     </div>
   );

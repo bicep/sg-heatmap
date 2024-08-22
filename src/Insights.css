@@ -1,0 +1,9 @@
+/* Lower the opacity of the popup content and the popup tip */
+.leaflet-popup-content-wrapper {
+  background: rgba(255, 255, 255, 0.7); /* Adjust the last value (0.7) for desired opacity */
+  border-radius: 5px;
+}
+
+.leaflet-popup-tip {
+  background: rgba(255, 255, 255, 0.7); /* Same opacity as the content wrapper */
+}

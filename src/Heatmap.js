@@ -13,7 +13,7 @@ const ZoomEventHandlers = ({ handleZoomEnd }) => {
 };
 
 
-const Heatmap = ({ heatMapData, thresholdsWithColor, changeResolutionWhenZoom }) => {
+const Heatmap = ({ heatMapData, thresholdsWithColor, changeResolutionWhenZoom, insightsActivated }) => {
   const [map, setMap] = useState(null);
   const [popupInfo, setPopupInfo] = useState(null);
 
@@ -112,7 +112,7 @@ const Heatmap = ({ heatMapData, thresholdsWithColor, changeResolutionWhenZoom })
           </div>
       </Popup>
       )}
-      <Insights map={map} heatMapData={heatMapData} />
+      <Insights map={map} heatMapData={heatMapData} insightsActivated={insightsActivated} />
     </MapContainer>
   );
 };

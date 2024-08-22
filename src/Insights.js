@@ -2,8 +2,9 @@ import { useEffect} from 'react';
 import { processHeatMapData } from './Utils';
 import { cellToBoundary } from 'h3-js';
 import L from 'leaflet';
+import "./Insights.css";
 
-const Insights = ({ map, heatMapData }) => {
+const Insights = ({ map, heatMapData, insightsActivated }) => {
   useEffect(() => {
     if (map) {
       // Clear previous popups
@@ -12,6 +13,10 @@ const Insights = ({ map, heatMapData }) => {
           map.removeLayer(layer);
         }
       });
+
+      if (!insightsActivated) {
+        return;
+      }
 
       // process the data
       const insights = processHeatMapData(heatMapData);
@@ -39,7 +44,7 @@ const Insights = ({ map, heatMapData }) => {
 
   }
 
-  }, [map, heatMapData]);
+  }, [map, heatMapData, insightsActivated]);
 
   return null;
 };
