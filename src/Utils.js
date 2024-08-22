@@ -224,7 +224,7 @@ export const processHeatMapData = (heatMapData) => {
   
   // dictionary traversal
   heatMapData.forEach((value) => {
-    // dictionary traversal
+    // array traversal
     value.forEach((data)=>{
       if (heatMapDataDictionary.has(data.h3Index)) {
         heatMapDataDictionary.set(data.h3Index, heatMapDataDictionary.get(data.h3Index).concat(data));
