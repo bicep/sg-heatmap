@@ -12,9 +12,20 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  width: 330px; /* Adjust as needed */
+  width: 350px; /* Adjust as needed */
   background: rgba(255, 255, 255, 0.8); /* Slightly transparent background */
   padding: 10px;
   border-radius: 8px;
   z-index: 1000; /* Ensure it appears above the map */
+}
+
+.legend-container {
+  position: absolute; /* Position it relative to the map container */
+  top: 10px; /* Adjust the top position as needed */
+  left: 10px; /* Ensure it is pressed to the left edge */
+  background-color: rgba(255, 255, 255, 0.8); /* Optional: Add background for visibility */
+  padding: 10px; /* Optional: Add padding inside the legend box */
+  border-radius: 5px; /* Optional: Add rounded corners */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Optional: Add shadow for depth */
+  z-index: 999; /* Ensure it appears below the histogram */
 }
