@@ -5,6 +5,7 @@ import "leaflet/dist/leaflet.css";
 import "./Heatmap.css";
 import Legend from './Legend';
 import Insights from './Insights';
+import Histogram from './Histogram';
 import L from 'leaflet';
 
 const ZoomEventHandlers = ({ handleZoomEnd }) => {
@@ -68,12 +69,12 @@ const Heatmap = ({ heatMapData, thresholdsWithColor, changeResolutionWhenZoom, i
   };
 
   return (
+    <div className='map-container'>
     <MapContainer center={[1.3521, 103.8198]} zoom={12} style={{ height: "100vh" }} ref={setMap}>
       <TileLayer
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Legend map={map} thresholdsWithColor={thresholdsWithColor}/>
       <ZoomEventHandlers handleZoomEnd={handleZoomEnd} />
       {[...heatMapData.keys()].map(dataSetName => {
           return heatMapData.get(dataSetName).map(({ h3Index, count, color, name }) => {
@@ -114,6 +115,13 @@ const Heatmap = ({ heatMapData, thresholdsWithColor, changeResolutionWhenZoom, i
       )}
       <Insights map={map} heatMapData={heatMapData} insightsActivated={insightsActivated} />
     </MapContainer>
+    <div className="histogram-container">
+      <Histogram heatMapData={heatMapData} highlightedValues={popupInfo} />
+    </div>
+    <div className="legend-container">
+      <Legend map={map} thresholdsWithColor={thresholdsWithColor}/>
+    </div>
+    </div>
   );
 };
 

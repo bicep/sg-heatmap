@@ -99,44 +99,44 @@ export const aggregatePointData = (data, resolution) => {
   }
  }
 
-//  export const calculateDivisions = (dataObject, divisions=5) => {
-//   // Extract the values from the object
-//   const values = dataObject.map(data=>data.count)
-
-//   // Sort the values in ascending order
-//   values.sort((a, b) => a - b);
-
-//   // Calculate the thresholds for each division
-//   const thresholds = [];
-//   thresholds.push(0);
-//   for (let i = 1; i < (divisions-1); i++) {
-//     const index = Math.floor((i / divisions) * values.length);
-//     thresholds.push(values[index]);
-//   }
-
-//   return thresholds;
-// };
-
-export const calculateDivisions = (dataObject, divisions = 5) => {
+ export const calculateDivisions = (dataObject, divisions=5) => {
   // Extract the values from the object
-  const values = dataObject.map(data => data.count);
+  const values = dataObject.map(data=>data.count)
 
-  // Calculate the mean and standard deviation
-  const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
-  const stdDev = Math.sqrt(values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length);
+  // Sort the values in ascending order
+  values.sort((a, b) => a - b);
 
-  // Calculate thresholds based on the normal distribution
+  // Calculate the thresholds for each division
   const thresholds = [];
-
-  // You can adjust the z-values for more or fewer divisions
-  const zValues = [-2, -1, 0, 1, 2]; // For 5 divisions, corresponding to standard deviations
-  for (let i = 0; i < divisions - 1; i++) {
-    const realValue = (mean + zValues[i] * stdDev);
-    thresholds.push((realValue>0)?realValue:0);
+  thresholds.push(0);
+  for (let i = 1; i < (divisions-1); i++) {
+    const index = Math.floor((i / divisions) * values.length);
+    thresholds.push(values[index]);
   }
 
   return thresholds;
 };
+
+// export const calculateDivisions = (dataObject, divisions = 5) => {
+//   // Extract the values from the object
+//   const values = dataObject.map(data => data.count);
+
+//   // Calculate the mean and standard deviation
+//   const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
+//   const stdDev = Math.sqrt(values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length);
+
+//   // Calculate thresholds based on the normal distribution
+//   const thresholds = [];
+
+//   // You can adjust the z-values for more or fewer divisions
+//   const zValues = [-2, -1, 0, 1, 2]; // For 5 divisions, corresponding to standard deviations
+//   for (let i = 0; i < divisions - 1; i++) {
+//     const realValue = (mean + zValues[i] * stdDev);
+//     thresholds.push((realValue>0)?realValue:0);
+//   }
+
+//   return thresholds;
+// };
 
 // color, name and normalization to dataset
 export const addNormalizationAndColorToDataSet = (heatmapData, normalizeData, thresholds, colorSpectrum, dataSetSelection) => {
