@@ -166,6 +166,8 @@ export const getBaseColor = (dataSetName) => {
       return Constants.orangeBase;
     case Constants.populationDensity:
       return Constants.blueBase;
+    case Constants.elderly:
+      return Constants.purpleBase;
     default:
       return Constants.blueBase;
   }

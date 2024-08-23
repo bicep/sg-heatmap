@@ -9,10 +9,11 @@ import {
 import { Constants } from './Constants';
 
 const App = () => {
-  const [dataSetSelections, setDataSetSelections] = useState([Constants.tree, Constants.hdb]);
+  const [dataSetSelections, setDataSetSelections] = useState([Constants.elderly, Constants.hdb]);
   const [rawTreeData, setRawTreeData] = useState([]);
   const [rawHDBData, setRawHDBData] = useState([]);
   const [rawWorldPopData, setRawWorldPopData] = useState([]);
+  const [rawElderlyData, setRawElderlyData] = useState([]);
   const [insightsActivated, setInsightsActivated] = useState(false);
   const [resolution, setResolution] = useState(8); // Set a default resolution, this can be made dynamic later
 
@@ -31,9 +32,14 @@ const App = () => {
       const worldPopData = await require("./worldpop.json");
       setRawWorldPopData(worldPopData);
     };
+    const fetchElderlyData = async () => {
+      const elderlyData = await require("./elderly.json");
+      setRawElderlyData(elderlyData);
+    };
     fetchTreeData();
     fetchHDBData();
     fetchWorldpopData();
+    fetchElderlyData();
   }, [])
 
   const changeResolutionWhenZoom = (newResolution) => {
@@ -50,6 +56,10 @@ const App = () => {
 
   const pdCheckBoxHandler = (e) => {
     checkButtonHandler(e, Constants.populationDensity, dataSetSelections, setDataSetSelections)
+  }
+
+  const elderlyCheckBoxHandler = (e) => {
+    checkButtonHandler(e, Constants.elderly, dataSetSelections, setDataSetSelections)
   }
 
   const insightsCheckBoxHandler = (e) => {
@@ -103,6 +113,18 @@ const App = () => {
         heatMapData.set(Constants.populationDensity, preparePDData.heatMapDataToDisplay);
         thresholds.set(Constants.populationDensity, preparePDData.thresholdsWithColor);
         break;
+      case Constants.elderly:
+        const prepareElderlyData = prepareValueData(
+          dataSetSelection,
+          rawElderlyData,
+          resolution,
+          "elderly",
+          Constants.purpleSpectrum,
+          Constants.thresholdDivisions
+        );
+        heatMapData.set(Constants.elderly, prepareElderlyData.heatMapDataToDisplay);
+        thresholds.set(Constants.elderly, prepareElderlyData.thresholdsWithColor);
+        break;
       default:
     }
   }
@@ -136,6 +158,13 @@ const App = () => {
               onChange={pdCheckBoxHandler}/> {Constants.populationDensity}
           </label>
           <label>
+            <input 
+              type="checkbox"
+              name={Constants.elderly}
+              checked={dataSetSelections.includes(Constants.elderly)}
+              onChange={elderlyCheckBoxHandler}/> {Constants.elderly}
+          </label>
+          <label style={{float:'right', marginRight:'20px'}}>
             <input 
               type="checkbox"
               name={Constants.insights}

@@ -28,10 +28,10 @@ yarn-error.log*
 /src/worldpop_script.js
 /public/trees.csv
 /public/hdb.csv
-/src/elderly.json
 /public/elderly.csv
 /public/worldpop.csv
 
 # /src/trees.json
 # /src/hdb.json
 # /src/worldpop.json
+# /src/elderly.json
