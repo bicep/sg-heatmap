@@ -158,6 +158,19 @@ export const getColorForCountWithThreshold = (thresholds, count, colorSpectrum) 
                                    colorSpectrum[0];   
 };
 
+export const getBaseColor = (dataSetName) => {
+  switch (dataSetName) {
+    case Constants.tree:
+      return Constants.greenBase;
+    case Constants.hdb:
+      return Constants.orangeBase;
+    case Constants.populationDensity:
+      return Constants.blueBase;
+    default:
+      return Constants.blueBase;
+  }
+}
+
 export const randomSample = (data, sampleSize) => {
   const totalRows = data.length;
   const indices = Array.from({ length: sampleSize }, (_, i) => Math.floor(Math.random() * totalRows));

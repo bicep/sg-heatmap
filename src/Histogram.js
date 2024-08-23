@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
+import {getBaseColor} from './Utils';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -34,14 +35,14 @@ const Histogram = ({ heatMapData, highlightedValues }) => {
         datasets: [{
           label: `${dataSetName} Data Distribution`,
           data: bins,
-          backgroundColor: bins.map((_, i) => i === activeBarIndex.get(dataSetName) ? 'rgba(75, 192, 192, 0.6)' : 'rgba(153, 102, 255, 0.6)'),
+          backgroundColor: bins.map((_, i) => i === activeBarIndex.get(dataSetName) ? '#FFFF00' : getBaseColor(dataSetName)),
           borderColor: bins.map((_, i) => i === activeBarIndex.get(dataSetName) ? 'rgba(75, 192, 192, 1)' : 'rgba(153, 102, 255, 1)'),
           borderWidth: 1
         }]
       })
-
-      setChartData(chartDataToSet);
-    });
+     });
+    
+     setChartData(chartDataToSet);
   }, [heatMapData, activeBarIndex]);
 
   // Highlight the correct bin when the hexagon is hovered
