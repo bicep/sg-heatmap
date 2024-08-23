@@ -118,9 +118,7 @@ const Heatmap = ({ heatMapData, thresholdsWithColor, changeResolutionWhenZoom, i
     <div className="histogram-container">
       <Histogram heatMapData={heatMapData} highlightedValues={popupInfo} />
     </div>
-    <div className="legend-container">
-      <Legend map={map} thresholdsWithColor={thresholdsWithColor}/>
-    </div>
+    <Legend map={map} thresholdsWithColor={thresholdsWithColor}/>
     </div>
   );
 };

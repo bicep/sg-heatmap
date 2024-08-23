@@ -10,7 +10,7 @@ function Legend({ map, thresholdsWithColor }) {
     if (map) {
       // remove any existing legend
       control.remove();
-      const legend = L.control({ position: "bottomright" });
+      const legend = L.control({ position: "bottomleft" });
 
       legend.onAdd = () => {
         const div = L.DomUtil.create("div", "info legend");
