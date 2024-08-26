@@ -21,9 +21,10 @@ const Heatmap = ({ heatMapData, thresholdsWithColor, changeResolutionWhenZoom, i
   const handleZoomEnd = (e) => {
     // console.log('Map zoom level:', e.target.getZoom());
     let resolution = e.target.getZoom()-4;
-    // if (e.target.getZoom() >=15)  {
-    //   resolution = 9;
-    // }
+    // max resolution is 10 because everything is calculated in front end right now
+    if (resolution > 10)  {
+      resolution = 10;
+    }
     changeResolutionWhenZoom(resolution)
   };
 
