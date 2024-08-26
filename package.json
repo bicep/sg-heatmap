@@ -51,5 +51,13 @@
   },
   "devDependencies": {
     "gh-pages": "^6.1.1"
+  },
+  "jest": {
+  "transformIgnorePatterns": [
+    "/node_modules/(?!(react-leaflet/lib|@react-leaflet/core/lib)/)"
+  ],
+  "moduleNameMapper": {
+    "\\.(css|less|sass|scss)$": "identity-obj-proxy"
+  }
   }
 }
