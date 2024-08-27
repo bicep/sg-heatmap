@@ -30,7 +30,7 @@ yarn-error.log*
 /public/hdb.csv
 /public/elderly.csv
 /public/worldpop.csv
-
+.vscode
 # /src/trees.json
 # /src/hdb.json
 # /src/worldpop.json
