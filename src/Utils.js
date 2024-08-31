@@ -72,7 +72,7 @@ export const aggregatePointData = (data, resolution) => {
       if (h3Map[h3Index]) {
          h3Map[h3Index] = h3Map[h3Index] + parseFloat(point[valueFieldName]);
       } else {
-         h3Map[h3Index] = parseInt(point[valueFieldName]);
+         h3Map[h3Index] = parseFloat(point[valueFieldName]);
       }
    });
 
